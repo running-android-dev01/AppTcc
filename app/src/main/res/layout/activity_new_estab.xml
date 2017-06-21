@@ -7,20 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.igor.apptcc.MapsActivity">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_add"
-        app:fabSize="normal" />
+    <include layout="@layout/content_new_estab" />
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
