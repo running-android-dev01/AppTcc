@@ -124,7 +124,7 @@ public class CadastroEstabActivity extends AppCompatActivity {
 
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
-            mAddressOutput = resultData.getString(FetchAddressIntentUtils.RESULT_DATA_KEY);
+            //mAddressOutput = resultData.getString(FetchAddressIntentUtils.RESULT_DATA_KEY);
             displayAddressOutput();
 
             mAddressRequested = false;

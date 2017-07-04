@@ -13,11 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igor.apptcc.controller.LoginController;
 import com.example.igor.apptcc.model.LoginModel;
 import com.example.igor.apptcc.utils.LoginUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,7 +67,6 @@ public class SignupActivity extends AppCompatActivity {
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -95,10 +94,8 @@ public class SignupActivity extends AppCompatActivity {
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         final LoginModel loginModel = new LoginModel(name, email, password);
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -115,11 +112,11 @@ public class SignupActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignupActivity.this, "Authentication failed.",
+                            Toast.makeText(SignupActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         }
-
-                        // ...
+                        _signupButton.setEnabled(true);
+                        progressDialog.dismiss();
                     }
                 });
     }
@@ -127,23 +124,10 @@ public class SignupActivity extends AppCompatActivity {
     private void onAuthSuccess(FirebaseUser user, LoginModel loginModel) {
         String uid = user.getUid();
 
-        // Write new user
-        //writeNewUser(user.getUid(), loginModel);
+        LoginController.saveUser(mDatabase, uid, loginModel);
         LoginUtils.setLoginUpdatesResult(this, uid);
 
-        // Go to MainActivity
         startActivity(new Intent(this, MapsActivity.class));
-        finish();
-    }
-
-    private void writeNewUser(String userId, LoginModel loginModel) {
-        mDatabase.child("users").child(userId).setValue(loginModel);
-    }
-
-
-    public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
         finish();
     }
 

@@ -2,6 +2,7 @@ package com.example.igor.apptcc;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -12,10 +13,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igor.apptcc.utils.LoginUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 
 public class LoginActivity  extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
     private static final int REQUEST_SIGNUP = 0;
+
+
+    private FirebaseAuth mAuth;
 
     private EditText _emailText;
     private EditText _passwordText;
@@ -26,6 +37,9 @@ public class LoginActivity  extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mAuth = FirebaseAuth.getInstance();
+
 
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
@@ -69,20 +83,35 @@ public class LoginActivity  extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            LoginUtils.setLoginUpdatesResult(LoginActivity.this, user.getUid());
+                            onLoginSuccess();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            onLoginFailed();
+                        }
+
+                        // ...
                     }
-                }, 3000);
+                });
+        //onLoginSuccess();
+        // onLoginFailed();
+        progressDialog.dismiss();
     }
 
 
@@ -105,13 +134,12 @@ public class LoginActivity  extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
+        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
         _loginButton.setEnabled(true);
         finish();
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
     }
 

@@ -23,7 +23,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.igor.apptcc.controller.LoginController;
+import com.example.igor.apptcc.model.EstabModel;
+import com.example.igor.apptcc.model.LoginModel;
 import com.example.igor.apptcc.utils.LoginUtils;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -40,11 +47,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends AppCompatActivity implements
                                 OnMapReadyCallback,
                                 GoogleApiClient.ConnectionCallbacks,
                                 GoogleApiClient.OnConnectionFailedListener {
+
+    private DatabaseReference mDatabase;
 
     private static final String TAG = MapsActivity.class.getSimpleName();
 
@@ -78,6 +92,8 @@ public class MapsActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_maps);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -85,18 +101,19 @@ public class MapsActivity extends AppCompatActivity implements
 
         setSupportActionBar(toolbar);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar!=null){
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setHomeButtonEnabled(false);
-        }
 
         String userKey = LoginUtils.getLoginUpdatesResult(this);
         if (TextUtils.isEmpty(userKey)){
             Intent i = new Intent(MapsActivity.this, LoginActivity.class);
             startActivity(i);
+            finish();
             return;
         }
+
+        DatabaseReference mDatabase;
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        LoginController.getUser(this, mDatabase);
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -235,6 +252,8 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
+
+        loadEstab();
     }
 
     @Override
@@ -363,5 +382,52 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mLastKnownLocation = null;
         }
+    }
+
+    private void loadEstab(){
+        GeoFire geoFire = new GeoFire(mDatabase.child("GeoFire"));
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+           public void onKeyEntered(final String key, GeoLocation location) {
+                ValueEventListener postListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        EstabModel estabModel = dataSnapshot.getValue(EstabModel.class);
+
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(estabModel.latitude, estabModel.longitude))
+                                .title(estabModel.name)
+                                .snippet(estabModel.address)).setTag(key);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    }
+                };
+                mDatabase.child("/date/establishment/"+ key).addValueEventListener(postListener);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                //System.out.println(String.format("Key %s is no longer in the search area", key));
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                //System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                //System.out.println("All initial data has been loaded and events have been fired!");
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                //System.err.println("There was an error with this query: " + error);
+            }
+        });
     }
 }
