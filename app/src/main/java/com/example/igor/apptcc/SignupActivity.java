@@ -13,23 +13,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igor.apptcc.controller.LoginController;
-import com.example.igor.apptcc.model.LoginModel;
-import com.example.igor.apptcc.utils.LoginUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = SignupActivity.class.getName();
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
 
 
     private EditText _nameText;
@@ -37,25 +32,20 @@ public class SignupActivity extends AppCompatActivity {
     private EditText _passwordText;
     private EditText _reEnterPasswordText;
     private Button _signupButton;
-    private TextView _loginLink;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
-
 
         _nameText = (EditText) findViewById(R.id.input_name);
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
         _reEnterPasswordText = (EditText) findViewById(R.id.input_reEnterPassword);
         _signupButton = (Button) findViewById(R.id.btn_signup);
-        _loginLink = (TextView) findViewById(R.id.link_login);
+        TextView _loginLink = (TextView) findViewById(R.id.link_login);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,29 +81,40 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String name = _nameText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
-        final LoginModel loginModel = new LoginModel(name, email, password);
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             if (task.isSuccessful()) {
-                                onAuthSuccess(task.getResult().getUser(), loginModel);
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null) {
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(name)
+                                            .build();
+
+                                    user.updateProfile(profileUpdates)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        startActivity(new Intent(SignupActivity.this, MapsActivity.class));
+                                                        Log.d(TAG, "User profile updated.");
+                                                    }
+                                                }
+                                            });
+                                }
+
                             } else {
-                                Toast.makeText(SignupActivity.this, "Sign Up Failed",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignupActivity.this, task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                         _signupButton.setEnabled(true);
                         progressDialog.dismiss();
@@ -121,15 +122,6 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
-    private void onAuthSuccess(FirebaseUser user, LoginModel loginModel) {
-        String uid = user.getUid();
-
-        LoginController.saveUser(mDatabase, uid, loginModel);
-        LoginUtils.setLoginUpdatesResult(this, uid);
-
-        startActivity(new Intent(this, MapsActivity.class));
-        finish();
-    }
 
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();

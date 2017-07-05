@@ -80,7 +80,17 @@
 
         <service
             android:name=".service.FetchLocationIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <receiver
+            android:name=".broadcastReceiver.TokenBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".EstabActivity"
+            android:label="@string/title_activity_estab"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -3,17 +3,13 @@ package com.example.igor.apptcc;
 import android.app.Application;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class AppTccAplication extends Application {
-    FirebaseApp firebaseApp;
     @Override
     public void onCreate() {
         super.onCreate();
-        //firebaseApp = FirebaseApp.initializeApp(this);
-    }
-
-    public FirebaseApp getFirebaseApp() {
-        return firebaseApp;
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

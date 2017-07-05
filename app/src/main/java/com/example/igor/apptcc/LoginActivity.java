@@ -13,12 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igor.apptcc.utils.LoginUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 public class LoginActivity  extends AppCompatActivity {
@@ -26,12 +24,12 @@ public class LoginActivity  extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
 
+
     private FirebaseAuth mAuth;
 
     private EditText _emailText;
     private EditText _passwordText;
     private Button _loginButton;
-    private TextView _signupLink;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +42,7 @@ public class LoginActivity  extends AppCompatActivity {
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
         _loginButton = (Button) findViewById(R.id.btn_login);
-        _signupLink = (TextView) findViewById(R.id.link_signup);
+        TextView _signupLink = (TextView) findViewById(R.id.link_signup);
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -86,7 +84,7 @@ public class LoginActivity  extends AppCompatActivity {
         final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
+
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -95,8 +93,6 @@ public class LoginActivity  extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            LoginUtils.setLoginUpdatesResult(LoginActivity.this, user.getUid());
                             onLoginSuccess();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -105,12 +101,8 @@ public class LoginActivity  extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             onLoginFailed();
                         }
-
-                        // ...
                     }
                 });
-        //onLoginSuccess();
-        // onLoginFailed();
         progressDialog.dismiss();
     }
 
@@ -119,9 +111,6 @@ public class LoginActivity  extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
         }
@@ -129,7 +118,6 @@ public class LoginActivity  extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Disable going back to the MainActivity
         moveTaskToBack(true);
     }
 

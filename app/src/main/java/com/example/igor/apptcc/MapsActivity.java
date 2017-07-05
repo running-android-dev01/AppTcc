@@ -1,21 +1,14 @@
 package com.example.igor.apptcc;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.text.TextUtilsCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,21 +16,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.example.igor.apptcc.controller.LoginController;
 import com.example.igor.apptcc.model.EstabModel;
-import com.example.igor.apptcc.model.LoginModel;
-import com.example.igor.apptcc.utils.LoginUtils;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,22 +29,28 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.HashMap;
+
 
 public class MapsActivity extends AppCompatActivity implements
                                 OnMapReadyCallback,
                                 GoogleApiClient.ConnectionCallbacks,
                                 GoogleApiClient.OnConnectionFailedListener {
 
-    private DatabaseReference mDatabase;
+
+    private FirebaseAuth mAuth;
+
 
     private static final String TAG = MapsActivity.class.getSimpleName();
-
-    private FloatingActionButton fab;
 
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
@@ -79,11 +67,10 @@ public class MapsActivity extends AppCompatActivity implements
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    private final int mMaxEntries = 5;
-    private String[] mLikelyPlaceNames = new String[mMaxEntries];
-    private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
-    private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
-    private LatLng[] mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
+
+
+
+    private HashMap<String, Marker> hasMarker = new HashMap<>();
 
 
     @Override
@@ -92,28 +79,12 @@ public class MapsActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_maps);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        mAuth = FirebaseAuth.getInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
         setSupportActionBar(toolbar);
-
-
-        String userKey = LoginUtils.getLoginUpdatesResult(this);
-        if (TextUtils.isEmpty(userKey)){
-            Intent i = new Intent(MapsActivity.this, LoginActivity.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
-        DatabaseReference mDatabase;
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        LoginController.getUser(this, mDatabase);
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -129,19 +100,28 @@ public class MapsActivity extends AppCompatActivity implements
                 .build();
         mGoogleApiClient.connect();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MapsActivity.this, NewEstabActivity.class);
-                startActivity(i);
-            }
-        });
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+
         if (mGoogleApiClient!=null) mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -149,6 +129,19 @@ public class MapsActivity extends AppCompatActivity implements
         if (mGoogleApiClient!=null) mGoogleApiClient.disconnect();
         super.onStop();
     }
+
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            Log.d(TAG, "User ID: " + user.getUid());
+        } else {
+            Log.d(TAG, "Error: sign in failed.");
+
+            Intent i = new Intent(MapsActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        }
+    }
+
 
 
     @Override
@@ -162,16 +155,13 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "
-                + result.getErrorCode());
-        Snackbar.make(fab, result.getErrorMessage() + "", Snackbar.LENGTH_LONG).show();
+        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "  + result.getErrorCode());
 
     }
 
@@ -182,14 +172,15 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.current_place_menu, menu);
+        menu.add(1, 1, 1, "New Establishment");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPlace();
+        if (item.getItemId() == 1) {
+            Intent i = new Intent(MapsActivity.this, NewEstabActivity.class);
+            startActivity(i);
         }
         return true;
     }
@@ -206,7 +197,7 @@ public class MapsActivity extends AppCompatActivity implements
             }
 
             @Override
-            public View getInfoContents(Marker marker) {
+            public View getInfoContents(final Marker marker) {
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
                         (FrameLayout)findViewById(R.id.map), false);
 
@@ -216,7 +207,21 @@ public class MapsActivity extends AppCompatActivity implements
                 TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
                 snippet.setText(marker.getSnippet());
 
+
                 return infoWindow;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                String key = marker.getTag().toString();
+
+                Intent i = new Intent(MapsActivity.this, EstabActivity.class);
+                i.putExtra(EstabActivity.RECEIVER_KEY, key);
+                startActivity(i);
+
+                //Toast.makeText(MapsActivity.this, marker.getTag().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -274,98 +279,13 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
 
-    private void showCurrentPlace() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            @SuppressWarnings("MissingPermission")
-            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                    .getCurrentPlace(mGoogleApiClient, null);
-            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-                @Override
-                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-                    int i = 0;
-                    mLikelyPlaceNames = new String[mMaxEntries];
-                    mLikelyPlaceAddresses = new String[mMaxEntries];
-                    mLikelyPlaceAttributions = new String[mMaxEntries];
-                    mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                        mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                        mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace().getAddress();
-                        mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-                                .getAttributions();
-                        mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                        i++;
-                        if (i > (mMaxEntries - 1)) {
-                            break;
-                        }
-                    }
-                    likelyPlaces.release();
-
-                    openPlacesDialog();
-                }
-            });
-        } else {
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
-        }
-    }
-
-    /**
-     * Displays a form allowing the user to select a place from a list of likely places.
-     */
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The "which" argument contains the position of the selected item.
-                        LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                        String markerSnippet = mLikelyPlaceAddresses[which];
-                        if (mLikelyPlaceAttributions[which] != null) {
-                            markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                        }
-                        // Add a marker for the selected place, with an info window
-                        // showing information about that place.
-                        mMap.addMarker(new MarkerOptions()
-                                .title(mLikelyPlaceNames[which])
-                                .position(markerLatLng)
-                                .snippet(markerSnippet));
-
-                        // Position the map's camera at the location of the marker.
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                                DEFAULT_ZOOM));
-                    }
-                };
-
-        // Display the dialog.
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
-    }
-
-    /**
-     * Updates the map's UI settings based on whether the user has granted location permission.
-     */
     private void updateLocationUI() {
         if (mMap == null) {
             return;
         }
 
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
         } else {
@@ -385,49 +305,63 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private void loadEstab(){
-        GeoFire geoFire = new GeoFire(mDatabase.child("GeoFire"));
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10);
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+        DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("date/establishment");
+        scoresRef.addChildEventListener(new ChildEventListener() {
+
             @Override
-           public void onKeyEntered(final String key, GeoLocation location) {
-                ValueEventListener postListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        EstabModel estabModel = dataSnapshot.getValue(EstabModel.class);
-
-                        mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(estabModel.latitude, estabModel.longitude))
-                                .title(estabModel.name)
-                                .snippet(estabModel.address)).setTag(key);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    }
-                };
-                mDatabase.child("/date/establishment/"+ key).addValueEventListener(postListener);
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                refreshEstab(dataSnapshot);
             }
 
             @Override
-            public void onKeyExited(String key) {
-                //System.out.println(String.format("Key %s is no longer in the search area", key));
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                refreshEstab(dataSnapshot);
             }
 
             @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                //System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                removeEstab(dataSnapshot);
             }
 
             @Override
-            public void onGeoQueryReady() {
-                //System.out.println("All initial data has been loaded and events have been fired!");
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                refreshEstab(dataSnapshot);
             }
 
             @Override
-            public void onGeoQueryError(DatabaseError error) {
-                //System.err.println("There was an error with this query: " + error);
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: The " + databaseError.toString());
             }
         });
+    }
+
+    private void refreshEstab(DataSnapshot dataSnapshot){
+        EstabModel estabModel = dataSnapshot.getValue(EstabModel.class);
+
+
+        removeEstab(dataSnapshot);
+
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(estabModel.latitude, estabModel.longitude))
+                .title(estabModel.name)
+                .snippet(estabModel.address));
+
+        marker.setTag(dataSnapshot.getKey());
+
+        hasMarker.put(dataSnapshot.getKey(), marker);
+
+    }
+
+    private void removeEstab(DataSnapshot dataSnapshot){
+        Marker marker = hasMarker.get(dataSnapshot.getKey());
+        if (marker!=null){
+            marker.remove();
+        }
+
+        hasMarker.remove(dataSnapshot.getKey());
     }
 }

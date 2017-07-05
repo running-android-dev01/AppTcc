@@ -3,6 +3,7 @@ package com.example.igor.apptcc.model;
 import android.widget.EditText;
 
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,8 @@ public class LoginModel {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", this.name);
         result.put("email", this.email);
-        result.put("password", password);
+        result.put("password", this.password);
+        result.put("serverValueDate", ServerValue.TIMESTAMP);
 
         return result;
     }
