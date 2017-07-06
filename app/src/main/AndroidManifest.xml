@@ -90,6 +90,10 @@
         <activity
             android:name=".EstabActivity"
             android:label="@string/title_activity_estab"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".utils.NewDrink"
+            android:label="@string/title_activity_new_drink"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

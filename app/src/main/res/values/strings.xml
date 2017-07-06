@@ -47,4 +47,5 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="title_activity_estab">EstabActivity</string>
+    <string name="title_activity_new_drink">NewDrink</string>
 </resources>
