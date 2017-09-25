@@ -83,7 +83,6 @@ public class MapsActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
-
         setSupportActionBar(toolbar);
 
         if (savedInstanceState != null) {
@@ -265,17 +264,21 @@ public class MapsActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser!=null){
+            mLocationPermissionGranted = false;
+            switch (requestCode) {
+                case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                    // If request is cancelled, the result arrays are empty.
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        mLocationPermissionGranted = true;
+                    }
                 }
             }
+            updateLocationUI();
         }
-        updateLocationUI();
     }
 
 

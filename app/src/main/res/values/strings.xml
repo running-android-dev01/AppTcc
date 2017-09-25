@@ -42,10 +42,33 @@
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="title_activity_estab">EstabActivity</string>
     <string name="title_activity_new_drink">NewDrink</string>
+
+
+    <string name="error_invalid_custom_token">O formato token personalizado está incorreto. Verifique a documentação.</string>
+    <string name="error_custom_token_mismatch">O token personalizado corresponde a um público diferente.</string>
+    <string name="error_invalid_credential">A credencial de autenticação fornecida está mal formada ou expirou.</string>
+    <string name="error_invalid_email">O endereço de e-mail está mal formatado.</string>
+    <string name="error_wrong_password">A senha é inválida ou o usuário não possui uma senha.</string>
+    <string name="error_user_mismatch">As credenciais fornecidas não correspondem ao usuário anteriormente assinado.</string>
+    <string name="error_requires_recent_login">Esta operação é sensível e requer autenticação recente. Faça o login novamente antes de tentar novamente esta solicitação.</string>
+    <string name="error_account_exists_with_different_credential">Uma conta já existe com o mesmo endereço de e-mail, mas credenciais de login diferentes. Faça login usando um provedor associado a este endereço de e-mail.</string>
+    <string name="error_email_already_in_use">O endereço de e-mail já está sendo usado por outra conta.</string>
+    <string name="error_credential_already_in_use">Esta credencial já está associada a uma conta de usuário diferente.</string>
+    <string name="error_user_disabled">A conta de usuário foi desabilitada por um administrador.</string>
+    <string name="error_user_token_expired">A credencial do usuário não é mais válida. O usuário deve fazer login novamente.</string>
+    <string name="error_user_not_found">Não há registro de usuário correspondente a este identificador. O usuário pode ter sido excluído.</string>
+    <string name="error_invalid_user_token">A credencial do usuário não é mais válida. O usuário deve fazer login novamente.</string>
+    <string name="error_operation_not_allowed">Esta operação não é permitida. Você deve habilitar este serviço no console.</string>
+    <string name="error_weak_password">A senha fornecida não é válida.</string>
+    <string name="title_activity_listagem">ListagemActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
