@@ -38,7 +38,7 @@
 
         <activity
             android:name=".usuario.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,19 +48,19 @@
         </activity>
         <activity
             android:name=".usuario.NovoLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".listagem.ListagemActivity"
             android:label="@string/title_activity_listagem"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
 
         <!-- ANTIGO -->
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".service.LocationUpdatesService"
@@ -70,7 +70,7 @@
         <activity
             android:name=".CadastroEstabActivity"
             android:label="@string/title_activity_cadastro_estab"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".service.FetchAddressIntentService"
@@ -79,19 +79,19 @@
         <activity
             android:name=".CadastroEstabMapaActivity"
             android:label="@string/title_activity_cadastro_estab_mapa"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".NewEstabActivity"
             android:label="@string/title_activity_new_estab"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_new_estab"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_new_estab"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".service.FetchLocationIntentService"
@@ -105,7 +105,7 @@
         <activity
             android:name=".EstabActivity"
             android:label="@string/title_activity_estab"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

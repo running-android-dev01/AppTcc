@@ -1,33 +1,20 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
-        <item name="android:colorAccent">@color/accent</item>
-        <item name="android:textColorPrimary">@color/primary_text</item>
-        <item name="android:textColorSecondary">@color/secondary_text</item>
-        <item name="android:icon">@color/icons</item>
-        <item name="android:divider">@color/divider</item>
-        <item name="android:navigationBarColor">@color/primary_light</item>
-        <item name="android:textColorHighlight">@color/primary_light</item>
-        <item name="android:textColorHintInverse">@color/primary_light</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <!-- Light Indigo -->
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <!-- Dark Indigo -->
+        <item name="colorAccent">@color/primaryLightColor</item>
+        <!-- Blue -->
     </style>
-
-    <style name="AppTheme.NoActionBar" parent="@style/AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+    <style name="AppTheme" parent="AppTheme.Base"></style>
 
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
-        <item name="colorAccent">@color/accent</item>
+        <!--<item name="colorAccent">@color/accent</item>
         <item name="android:textColorPrimary">@color/primary_text</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@color/primary</item>-->
     </style>
 </resources>
