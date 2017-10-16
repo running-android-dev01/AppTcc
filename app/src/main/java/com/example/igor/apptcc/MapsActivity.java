@@ -81,7 +81,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         mAuth = FirebaseAuth.getInstance();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
@@ -198,12 +198,12 @@ public class MapsActivity extends AppCompatActivity implements
             @Override
             public View getInfoContents(final Marker marker) {
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout)findViewById(R.id.map), false);
+                        findViewById(R.id.map), false);
 
-                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
+                TextView title = infoWindow.findViewById(R.id.title);
                 title.setText(marker.getTitle());
 
-                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
+                TextView snippet = infoWindow.findViewById(R.id.snippet);
                 snippet.setText(marker.getSnippet());
 
 

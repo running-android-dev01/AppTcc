@@ -56,7 +56,7 @@ public class CadastroEstabActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_estab);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -66,8 +66,8 @@ public class CadastroEstabActivity extends AppCompatActivity {
 
         mResultReceiver = new AddressResultReceiver(new Handler());
 
-        input_nome = (EditText) findViewById(R.id.input_nome);
-        input_endereco = (EditText) findViewById(R.id.input_endereco);
+        input_nome = findViewById(R.id.input_nome);
+        input_endereco = findViewById(R.id.input_endereco);
 
         // Set defaults, then update using values stored in the Bundle.
         mAddressRequested = false;

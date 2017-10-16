@@ -60,31 +60,31 @@ public class EstabActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estab);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
         KEY = getIntent().getExtras().getString(RECEIVER_KEY, "");
 
-        title = (TextView) findViewById(R.id.title);
-        snippet = (TextView) findViewById(R.id.snippet);
-        lnlDrink = (LinearLayout) findViewById(R.id.lnlDrink);
+        title = findViewById(R.id.title);
+        snippet = findViewById(R.id.snippet);
+        lnlDrink = findViewById(R.id.lnlDrink);
 
 
-        txtAvaliableName1 = (TextView) findViewById(R.id.txtAvaliableName1);
-        txtAvaliableNote1 = (TextView) findViewById(R.id.txtAvaliableNote1);
-        txtAvaliable1 = (TextView) findViewById(R.id.txtAvaliable1);
-        viewAvaliable1 = (View) findViewById(R.id.viewAvaliable1);
+        txtAvaliableName1 = findViewById(R.id.txtAvaliableName1);
+        txtAvaliableNote1 = findViewById(R.id.txtAvaliableNote1);
+        txtAvaliable1 = findViewById(R.id.txtAvaliable1);
+        viewAvaliable1 = findViewById(R.id.viewAvaliable1);
 
-        txtAvaliableName2 = (TextView) findViewById(R.id.txtAvaliableName2);
-        txtAvaliableNote2 = (TextView) findViewById(R.id.txtAvaliableNote2);
-        txtAvaliable2 = (TextView) findViewById(R.id.txtAvaliable2);
-        viewAvaliable2 = (View) findViewById(R.id.viewAvaliable2);
+        txtAvaliableName2 = findViewById(R.id.txtAvaliableName2);
+        txtAvaliableNote2 = findViewById(R.id.txtAvaliableNote2);
+        txtAvaliable2 = findViewById(R.id.txtAvaliable2);
+        viewAvaliable2 = findViewById(R.id.viewAvaliable2);
 
-        txtAvaliableName3 = (TextView) findViewById(R.id.txtAvaliableName3);
-        txtAvaliableNote3 = (TextView) findViewById(R.id.txtAvaliableNote3);
-        txtAvaliable3 = (TextView) findViewById(R.id.txtAvaliable3);
-        viewAvaliable3 = (View) findViewById(R.id.viewAvaliable3);
+        txtAvaliableName3 = findViewById(R.id.txtAvaliableName3);
+        txtAvaliableNote3 = findViewById(R.id.txtAvaliableNote3);
+        txtAvaliable3 = findViewById(R.id.txtAvaliable3);
+        viewAvaliable3 = findViewById(R.id.viewAvaliable3);
 
         loadEstab();
     }
@@ -222,8 +222,8 @@ public class EstabActivity extends AppCompatActivity {
 
         viewDrink.setTag(dataSnapshot.getKey());
 
-        TextView txtDrinkName1 = (TextView)viewDrink.findViewById(R.id.txtDrinkName1);
-        TextView txtDrinkPrice1 = (TextView)viewDrink.findViewById(R.id.txtDrinkPrice1);
+        TextView txtDrinkName1 = viewDrink.findViewById(R.id.txtDrinkName1);
+        TextView txtDrinkPrice1 = viewDrink.findViewById(R.id.txtDrinkPrice1);
 
         txtDrinkName1.setText(drinkModel.name);
         txtDrinkPrice1.setText("R$ " + drinkModel.price);

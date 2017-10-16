@@ -73,20 +73,20 @@ public class NewEstabActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_estab);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         setSupportActionBar(toolbar);
 
-        input_name = (EditText) findViewById(R.id.input_name);
-        input_address = (EditText) findViewById(R.id.input_address);
-        input_locality = (EditText) findViewById(R.id.input_locality);
-        input_postalCode = (EditText) findViewById(R.id.input_postalCode);
-        input_countryName = (EditText) findViewById(R.id.input_countryName);
-        btn_create_estabelishment = (AppCompatButton) findViewById(R.id.btn_create_estabelishment);
-        link_cancel = (TextView) findViewById(R.id.link_cancel);
+        input_name = findViewById(R.id.input_name);
+        input_address = findViewById(R.id.input_address);
+        input_locality = findViewById(R.id.input_locality);
+        input_postalCode = findViewById(R.id.input_postalCode);
+        input_countryName = findViewById(R.id.input_countryName);
+        btn_create_estabelishment = findViewById(R.id.btn_create_estabelishment);
+        link_cancel = findViewById(R.id.link_cancel);
 
         btn_create_estabelishment.setOnClickListener(new View.OnClickListener() {
             @Override

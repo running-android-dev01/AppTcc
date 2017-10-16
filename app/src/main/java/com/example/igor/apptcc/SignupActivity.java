@@ -40,12 +40,12 @@ public class SignupActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        _nameText = (EditText) findViewById(R.id.input_name);
-        _emailText = (EditText) findViewById(R.id.input_email);
-        _passwordText = (EditText) findViewById(R.id.input_password);
-        _reEnterPasswordText = (EditText) findViewById(R.id.input_reEnterPassword);
-        _signupButton = (Button) findViewById(R.id.btn_signup);
-        TextView _loginLink = (TextView) findViewById(R.id.link_login);
+        _nameText = findViewById(R.id.input_name);
+        _emailText = findViewById(R.id.input_email);
+        _passwordText = findViewById(R.id.input_password);
+        _reEnterPasswordText = findViewById(R.id.input_reEnterPassword);
+        _signupButton = findViewById(R.id.btn_signup);
+        TextView _loginLink = findViewById(R.id.link_login);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override

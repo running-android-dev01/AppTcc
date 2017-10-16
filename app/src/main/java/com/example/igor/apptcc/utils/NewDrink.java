@@ -45,7 +45,7 @@ public class NewDrink extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_drink);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
@@ -53,10 +53,10 @@ public class NewDrink extends AppCompatActivity {
         keyDrink = getIntent().getExtras().getString(KEY_DRINK, "");
         drinkModel = (DrinkModel) getIntent().getExtras().getSerializable(KEY_MODEL);
 
-        input_name = (EditText) findViewById(R.id.input_name);
-        input_price = (EditText) findViewById(R.id.input_price);
-        btn_create_drink = (Button) findViewById(R.id.btn_create_drink);
-        link_cancel = (TextView) findViewById(R.id.link_cancel);
+        input_name = findViewById(R.id.input_name);
+        input_price = findViewById(R.id.input_price);
+        btn_create_drink = findViewById(R.id.btn_create_drink);
+        link_cancel = findViewById(R.id.link_cancel);
 
         if (drinkModel!=null){
             input_name.setText(drinkModel.name);

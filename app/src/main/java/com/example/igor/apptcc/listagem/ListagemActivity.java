@@ -171,7 +171,7 @@ public class ListagemActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -218,7 +218,7 @@ public class ListagemActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -255,12 +255,12 @@ public class ListagemActivity extends AppCompatActivity
             @Override
             public View getInfoContents(final Marker marker) {
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout)findViewById(R.id.map), false);
+                        findViewById(R.id.map), false);
 
-                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
+                TextView title = infoWindow.findViewById(R.id.title);
                 title.setText(marker.getTitle());
 
-                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
+                TextView snippet = infoWindow.findViewById(R.id.snippet);
                 snippet.setText(marker.getSnippet());
 
 
