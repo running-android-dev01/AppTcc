@@ -3,9 +3,6 @@ package com.example.igor.apptcc.model;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by igormoraes on 03/07/17.
- */
 
 public class EstabModel {
     public String name;

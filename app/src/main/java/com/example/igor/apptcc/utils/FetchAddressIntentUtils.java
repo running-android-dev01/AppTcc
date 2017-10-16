@@ -1,9 +1,5 @@
 package com.example.igor.apptcc.utils;
 
-/**
- * Created by igor on 10/06/2017.
- */
-
 public class FetchAddressIntentUtils {
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
