@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.igor.apptcc.model.AvaliableModel;
 import com.example.igor.apptcc.model.DrinkModel;
 import com.example.igor.apptcc.model.EstabModel;
 import com.example.igor.apptcc.utils.FetchLocationIntentUtils;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Locale;
 
 public class EstabActivity extends AppCompatActivity {
     private static final String TAG = EstabActivity.class.getName();
@@ -39,21 +42,7 @@ public class EstabActivity extends AppCompatActivity {
     private TextView snippet;
 
     private LinearLayout lnlDrink;
-
-    private TextView txtAvaliableName1;
-    private TextView txtAvaliableNote1;
-    private TextView txtAvaliable1;
-    private View viewAvaliable1;
-
-    private TextView txtAvaliableName2;
-    private TextView txtAvaliableNote2;
-    private TextView txtAvaliable2;
-    private View viewAvaliable2;
-
-    private TextView txtAvaliableName3;
-    private TextView txtAvaliableNote3;
-    private TextView txtAvaliable3;
-    private View viewAvaliable3;
+    private LinearLayout lnlAvaliable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,25 +55,10 @@ public class EstabActivity extends AppCompatActivity {
 
         KEY = getIntent().getExtras().getString(RECEIVER_KEY, "");
 
-        title = findViewById(R.id.title);
-        snippet = findViewById(R.id.snippet);
-        lnlDrink = findViewById(R.id.lnlDrink);
-
-
-        txtAvaliableName1 = findViewById(R.id.txtAvaliableName1);
-        txtAvaliableNote1 = findViewById(R.id.txtAvaliableNote1);
-        txtAvaliable1 = findViewById(R.id.txtAvaliable1);
-        viewAvaliable1 = findViewById(R.id.viewAvaliable1);
-
-        txtAvaliableName2 = findViewById(R.id.txtAvaliableName2);
-        txtAvaliableNote2 = findViewById(R.id.txtAvaliableNote2);
-        txtAvaliable2 = findViewById(R.id.txtAvaliable2);
-        viewAvaliable2 = findViewById(R.id.viewAvaliable2);
-
-        txtAvaliableName3 = findViewById(R.id.txtAvaliableName3);
-        txtAvaliableNote3 = findViewById(R.id.txtAvaliableNote3);
-        txtAvaliable3 = findViewById(R.id.txtAvaliable3);
-        viewAvaliable3 = findViewById(R.id.viewAvaliable3);
+        title = (TextView) findViewById(R.id.title);
+        snippet = (TextView) findViewById(R.id.snippet);
+        lnlDrink = (LinearLayout) findViewById(R.id.lnlDrink);
+        lnlAvaliable = (LinearLayout) findViewById(R.id.lnlAvaliable);
 
         loadEstab();
     }
@@ -93,6 +67,7 @@ public class EstabActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadDrink();
+        loadAvaliable();
     }
 
     @Override
@@ -109,27 +84,14 @@ public class EstabActivity extends AppCompatActivity {
             i.putExtra(NewDrink.KEY_ESTAB, KEY);
             startActivity(i);
         } else if (item.getItemId() == 2) {
-
+            Intent i = new Intent(EstabActivity.this, NewAvaliableActivity.class);
+            i.putExtra(NewAvaliableActivity.KEY_ESTAB, KEY);
+            startActivity(i);
         }
         return true;
     }
 
     private void loadEstab(){
-
-        txtAvaliableName1.setVisibility(View.GONE);
-        txtAvaliableNote1.setVisibility(View.GONE);
-        txtAvaliable1.setVisibility(View.GONE);
-        viewAvaliable1.setVisibility(View.GONE);
-
-        txtAvaliableName2.setVisibility(View.GONE);
-        txtAvaliableNote2.setVisibility(View.GONE);
-        txtAvaliable2.setVisibility(View.GONE);
-        viewAvaliable2.setVisibility(View.GONE);
-
-        txtAvaliableName3.setVisibility(View.GONE);
-        txtAvaliableNote3.setVisibility(View.GONE);
-        txtAvaliable3.setVisibility(View.GONE);
-        viewAvaliable3.setVisibility(View.GONE);
 
         DatabaseReference offsetRef = FirebaseDatabase.getInstance().getReference("date/establishment/" + KEY);
         offsetRef.addValueEventListener(new ValueEventListener() {
@@ -140,32 +102,7 @@ public class EstabActivity extends AppCompatActivity {
                 title.setText(estabModel.name);
                 snippet.setText(estabModel.address + " - " + estabModel.locality + " - " + estabModel.countryName);
 
-                txtAvaliableName1.setVisibility(View.VISIBLE);
-                txtAvaliableNote1.setVisibility(View.VISIBLE);
-                txtAvaliable1.setVisibility(View.VISIBLE);
-                viewAvaliable1.setVisibility(View.VISIBLE);
 
-                txtAvaliableName2.setVisibility(View.VISIBLE);
-                txtAvaliableNote2.setVisibility(View.VISIBLE);
-                txtAvaliable2.setVisibility(View.VISIBLE);
-                viewAvaliable2.setVisibility(View.VISIBLE);
-
-                txtAvaliableName3.setVisibility(View.VISIBLE);
-                txtAvaliableNote3.setVisibility(View.VISIBLE);
-                txtAvaliable3.setVisibility(View.VISIBLE);
-                viewAvaliable3.setVisibility(View.VISIBLE);
-
-                txtAvaliableName1.setText("AVALIADOR 1");
-                txtAvaliableNote1.setText("4");
-                txtAvaliable1.setText("AVALIACAO BOA DE MAIS. AVALIACAO BOA DE MAIS. AVALIACAO BOA DE MAIS. AVALIACAO BOA DE MAIS. AVALIACAO BOA DE MAIS.");
-
-                txtAvaliableName2.setText("AVALIADOR 2");
-                txtAvaliableNote2.setText("2");
-                txtAvaliable2.setText("AVALIACAO PIQUENA.");
-
-                txtAvaliableName3.setText("AVALIADOR 3");
-                txtAvaliableNote3.setText("1");
-                txtAvaliable3.setText("AVALIACAO MEDIA. AVALIACAO MEDIA. AVALIACAO MEDIA. AVALIACAO MEDIA.");
             }
 
             @Override
@@ -177,7 +114,8 @@ public class EstabActivity extends AppCompatActivity {
 
     private void loadDrink(){
         lnlDrink.removeAllViews();
-        Query query = FirebaseDatabase.getInstance().getReference().child("date").child("drink").child(KEY).orderByChild("name");
+        Query query = FirebaseDatabase.getInstance().getReference().child("date").child("drink").orderByChild("keyEstab").equalTo(KEY);
+
         query.addChildEventListener(new ChildEventListener() {
 
             @Override
@@ -225,8 +163,6 @@ public class EstabActivity extends AppCompatActivity {
         TextView txtDrinkName1 = viewDrink.findViewById(R.id.txtDrinkName1);
         TextView txtDrinkPrice1 = viewDrink.findViewById(R.id.txtDrinkPrice1);
 
-        txtDrinkName1.setText(drinkModel.name);
-        txtDrinkPrice1.setText("R$ " + drinkModel.price);
 
         viewDrink.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -247,6 +183,78 @@ public class EstabActivity extends AppCompatActivity {
             View view = lnlDrink.getChildAt(i);
             if (view.getTag().equals(dataSnapshot.getKey())){
                 lnlDrink.removeView(view);
+            }
+        }
+    }
+
+
+    private void loadAvaliable(){
+        lnlAvaliable.removeAllViews();
+
+
+        Query query = FirebaseDatabase.getInstance().getReference().child("date").child("establishment").child("avaliable").child(KEY).orderByChild("date");
+        query.addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                addAvaliable(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                addAvaliable(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                removeAvaliable(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
+                addAvaliable(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: The " + databaseError.toString());
+            }
+        });
+    }
+
+    private void addAvaliable(final DataSnapshot dataSnapshot){
+        removeAvaliable(dataSnapshot);
+
+        final AvaliableModel avaliableModel = new AvaliableModel();
+        avaliableModel.toAvaliable(dataSnapshot);
+
+        LayoutInflater factory = LayoutInflater.from(EstabActivity.this);
+        View viewAvaliable =  factory.inflate(R.layout.adapter_estab_avaliable, null);
+
+        viewAvaliable.setTag(dataSnapshot.getKey());
+
+        TextView txtAvaliableName = (TextView)viewAvaliable.findViewById(R.id.txtAvaliableName);
+        TextView txtAvaliableNote = (TextView)viewAvaliable.findViewById(R.id.txtAvaliableNote);
+        TextView txtAvaliable = (TextView)viewAvaliable.findViewById(R.id.txtAvaliable);
+
+        txtAvaliableName.setText(avaliableModel.name);
+        txtAvaliableNote.setText(String.format(Locale.getDefault(), "%.1f", avaliableModel.avaliable));
+        txtAvaliable.setText(avaliableModel.description);
+
+
+        lnlAvaliable.addView(viewAvaliable);
+    }
+
+
+    private void removeAvaliable(DataSnapshot dataSnapshot){
+        for (int i = 0; i > lnlAvaliable.getChildCount(); i++){
+            View view = lnlAvaliable.getChildAt(i);
+            if (view.getTag().equals(dataSnapshot.getKey())){
+                lnlAvaliable.removeView(view);
             }
         }
     }

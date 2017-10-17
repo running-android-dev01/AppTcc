@@ -48,7 +48,6 @@
     <string name="title_activity_estab">EstabActivity</string>
     <string name="title_activity_new_drink">NewDrink</string>
 
-
     <string name="error_invalid_custom_token">O formato token personalizado está incorreto. Verifique a documentação.</string>
     <string name="error_custom_token_mismatch">O token personalizado corresponde a um público diferente.</string>
     <string name="error_invalid_credential">A credencial de autenticação fornecida está mal formada ou expirou.</string>
@@ -69,4 +68,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="title_activity_new_avaliable">NewAvaliableActivity</string>
+    <string name="title_activity_search_drink">SearchDrinkActivity</string>
+
 </resources>

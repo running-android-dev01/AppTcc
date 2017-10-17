@@ -11,9 +11,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Map;
 
 public class DrinkController {
-    public static void saveDrink(String keyEstab, String name, String price){
+    public static void saveDrink(String keyEstab, String name, float price){
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("date/drink/" + keyEstab);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("date/drink");
 
         DatabaseReference drinkPush = ref.push();
 
@@ -24,9 +24,9 @@ public class DrinkController {
         drinkPush.setValue(result);
     }
 
-    public static void alterDrink(String keyEstab, String keyDrink, String name, String price){
+    public static void alterDrink(String keyEstab, String keyDrink, String name, float price){
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("date/drink/" + keyEstab + "/" + keyDrink);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("date/drink/" + keyDrink);
 
         DrinkModel drinkModel = new DrinkModel(name, price, keyEstab);
 
@@ -37,7 +37,7 @@ public class DrinkController {
 
     public static void removeDrink(String keyEstab, String keyDrink){
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("date/drink/" + keyEstab + "/" + keyDrink);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("date/drink/" + keyDrink);
 
         ref.removeValue(new DatabaseReference.CompletionListener() {
             @Override

@@ -10,13 +10,13 @@ import java.util.Map;
 public class DrinkModel implements Serializable {
 
     public String name;
-    public String price;
+    public float price;
     private String keyEstab;
 
     public DrinkModel() {
     }
 
-    public DrinkModel(String name, String price, String keyEstab) {
+    public DrinkModel(String name, float price, String keyEstab) {
         this.name = name.toUpperCase();
         this.price = price;
         this.keyEstab = keyEstab;
@@ -34,8 +34,22 @@ public class DrinkModel implements Serializable {
     public void toDrink(DataSnapshot dataSnapshot) {
         HashMap<String, Object> map =  (HashMap<String, Object>)dataSnapshot.getValue();
 
+        this.price = 0.0f;
+        Object mapPrice = map.get("price");
+        if (mapPrice!=null){
+            if (mapPrice instanceof Long){
+                long numero = (long)mapPrice;
+                this.price = (float) numero;
+            }else if (mapPrice instanceof Double){
+                double numero = (double)mapPrice;
+                this.price = (float) numero;
+            }else if (mapPrice instanceof String){
+                String numero = (String)mapPrice;
+                this.price = Float.parseFloat(numero);
+            }
+
+        }
         this.name = map.get("name")==null?"":map.get("name").toString();
-        this.price = map.get("price")==null?"0.0":map.get("price").toString();
         this.keyEstab = map.get("keyEstab")==null?"":map.get("keyEstab").toString();
     }
 }

@@ -106,6 +106,18 @@
             android:name=".EstabActivity"
             android:label="@string/title_activity_estab"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".utils.NewDrink"
+            android:label="@string/title_activity_new_drink"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".NewAvaliableActivity"
+            android:label="@string/title_activity_new_avaliable"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".SearchDrinkActivity"
+            android:label="@string/title_activity_search_drink"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

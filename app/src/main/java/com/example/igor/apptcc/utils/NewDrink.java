@@ -23,6 +23,10 @@ import com.example.igor.apptcc.controller.DrinkController;
 import com.example.igor.apptcc.controller.NewEstabController;
 import com.example.igor.apptcc.model.DrinkModel;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
 public class NewDrink extends AppCompatActivity {
 
     private static final String PACKAGE_NAME = NewDrink.class.getName();
@@ -60,7 +64,7 @@ public class NewDrink extends AppCompatActivity {
 
         if (drinkModel!=null){
             input_name.setText(drinkModel.name);
-            input_price.setText(drinkModel.price);
+            input_price.setText(String.format(Locale.getDefault(), "%.2f", drinkModel.price));
         }
 
         btn_create_drink.setOnClickListener(new View.OnClickListener(){
@@ -101,7 +105,9 @@ public class NewDrink extends AppCompatActivity {
     }
 
     private void addDrink(){
-        DrinkController.saveDrink(keyEstab, input_name.getText().toString(), input_price.getText().toString());
+        float price = floatFromStringOrZero(input_price.getText().toString());
+
+        DrinkController.saveDrink(keyEstab, input_name.getText().toString(), price);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(NewDrink.this);
         alert.setMessage("Saved successfully");
@@ -114,8 +120,28 @@ public class NewDrink extends AppCompatActivity {
         alert.show();
     }
 
+    Float floatFromStringOrZero(String s){
+        Float val = Float.valueOf(0);
+        try{
+            val = Float.valueOf(s);
+        } catch(NumberFormatException ex){
+            DecimalFormat df = new DecimalFormat();
+            Number n = null;
+            try{
+                n = df.parse(s);
+            } catch(ParseException ex2){
+            }
+            if(n != null)
+                val = n.floatValue();
+        }
+        return val;
+    }
+
+
     private void alterDrink(){
-        DrinkController.alterDrink(keyEstab, keyDrink, input_name.getText().toString(), input_price.getText().toString());
+        float price = floatFromStringOrZero(input_price.getText().toString());
+
+        DrinkController.alterDrink(keyEstab, keyDrink, input_name.getText().toString(), price);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(NewDrink.this);
         alert.setMessage("Saved successfully");

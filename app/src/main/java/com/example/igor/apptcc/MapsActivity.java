@@ -171,13 +171,20 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(1, 1, 1, "New Establishment");
+        menu.add(0, 1, 1, "Search").setIcon(ContextCompat.getDrawable(this, android.R.drawable.ic_menu_search));
+        menu.add(1, 2, 2, "New Establishment");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
+            Intent i = new Intent(MapsActivity.this, SearchDrinkActivity.class);
+            i.putExtra("LAT", mLastKnownLocation.getLatitude());
+            i.putExtra("LON", mLastKnownLocation.getLongitude());
+            startActivity(i);
+        }
+        else if (item.getItemId() == 2) {
             Intent i = new Intent(MapsActivity.this, NewEstabActivity.class);
             startActivity(i);
         }
