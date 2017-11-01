@@ -14,4 +14,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="80dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
+        android:orientation="horizontal"
+        >
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonProduto"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="Achar produto"
+            android:background="@color/primaryTextColor"
+            android:gravity="start|center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textSize="16sp"
+            />
+
+        <LinearLayout
+            android:id="@+id/buttonEstab"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="1dp"
+            android:background="@color/primaryTextColor">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_estab_foreground" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

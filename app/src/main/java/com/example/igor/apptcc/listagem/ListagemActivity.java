@@ -22,10 +22,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.igor.apptcc.BuildConfig;
 import com.example.igor.apptcc.EstabActivity;
 import com.example.igor.apptcc.MapsActivity;
 import com.example.igor.apptcc.R;
@@ -63,12 +68,11 @@ public class ListagemActivity extends AppCompatActivity
     private static String TAG = ListagemActivity.class.getName();
     private FirebaseAuth mAuth;
 
-    private TextView txtNomeUsuario;
-    private TextView txtEmailUsuario;
-
-
+    View mapView;
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
+    private Button buttonProduto;
+    private LinearLayout buttonEstab;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -89,6 +93,23 @@ public class ListagemActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listagem2);
 
+        buttonProduto = findViewById(R.id.buttonProduto);
+        buttonEstab = findViewById(R.id.buttonEstab);
+
+        buttonProduto.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ListagemActivity.this, "Achar produto", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        buttonEstab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ListagemActivity.this, "Achar estab", Toast.LENGTH_LONG).show();
+            }
+        });
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
@@ -104,15 +125,6 @@ public class ListagemActivity extends AppCompatActivity
         }
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -125,11 +137,20 @@ public class ListagemActivity extends AppCompatActivity
 
 
         ImageView imgFotoUsuario = headerLayout.findViewById(R.id.imgFotoUsuario);
-        txtNomeUsuario = headerLayout.findViewById(R.id.txtNomeUsuario);
-        txtEmailUsuario = headerLayout.findViewById(R.id.txtEmailUsuario);
+        TextView txtNomeUsuario = headerLayout.findViewById(R.id.txtNomeUsuario);
+        TextView txtEmailUsuario = headerLayout.findViewById(R.id.txtEmailUsuario);
+        TextView txtVersaoUsuario = headerLayout.findViewById(R.id.txtVersaoUsuario);
 
         txtNomeUsuario.setText(currentUser.getDisplayName());
         txtEmailUsuario.setText(currentUser.getEmail());
+        txtVersaoUsuario.setText(BuildConfig.VERSION_NAME);
+
+        imgFotoUsuario.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ListagemActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
+            }
+        });
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -179,43 +200,18 @@ public class ListagemActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.listagem, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_trocar_usuario) {
-            mAuth = FirebaseAuth.getInstance();
-            mAuth.signOut();
-
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_bares) {
-
-        } else if (id == R.id.nav_cerveja) {
-
-        } else if (id == R.id.nav_bares_avaliacao) {
-
-        } else if (id == R.id.nav_cerveja_avaliacao) {
-
+        if (id == R.id.nav_estab) {
+            Toast.makeText(this, "Click Novo Estab", Toast.LENGTH_LONG).show();
+        } else if (id == R.id.nav_avaliacao) {
+            Toast.makeText(this, "Click Avaliacao", Toast.LENGTH_LONG).show();
+        } else if (id == R.id.nav_ajustes) {
+            Toast.makeText(this, "Click Ajustes", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -227,6 +223,7 @@ public class ListagemActivity extends AppCompatActivity
     @Override
     public void onConnected(Bundle connectionHint) {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapView = mapFragment.getView();
         mapFragment.getMapAsync(this);
     }
 
@@ -401,23 +398,11 @@ public class ListagemActivity extends AppCompatActivity
     private void refreshEstab(DataSnapshot dataSnapshot){
         EstabModel estabModel = dataSnapshot.getValue(EstabModel.class);
 
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_local_bar_black_24dp);
-
-        Canvas canvas = new Canvas();
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        drawable.draw(canvas);
-
-        BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromBitmap(bitmap);
-
-
         removeEstab(dataSnapshot);
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(estabModel.latitude, estabModel.longitude))
                 .title(estabModel.name)
-                .icon(markerIcon)
                 .snippet(estabModel.address));
 
         marker.setTag(dataSnapshot.getKey());

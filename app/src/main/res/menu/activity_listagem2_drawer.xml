@@ -3,30 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="Localizar">
+    <item android:title="Funções">
         <menu>
             <item
-                android:id="@+id/nav_bares"
-                android:icon="@drawable/ic_local_bar_black_24dp"
-                android:title="Bares" />
+                android:id="@+id/nav_estab"
+                android:title="Novo estabelecimento" />
             <item
-                android:id="@+id/nav_cerveja"
-                android:icon="@drawable/ic_local_drink_black_24dp"
-                android:title="Cervejas" />
+                android:id="@+id/nav_avaliacao"
+                android:title="Suas avaliações" />
+            <item
+                android:id="@+id/nav_ajustes"
+                android:title="Ajustes filtro" />
         </menu>
     </item>
 
-    <item android:title="Suas avaliações">
-        <menu>
-            <item
-                android:id="@+id/nav_bares_avaliacao"
-                android:icon="@drawable/ic_local_bar_black_24dp"
-                android:title="Bares" />
-            <item
-                android:id="@+id/nav_cerveja_avaliacao"
-                android:icon="@drawable/ic_local_drink_black_24dp"
-                android:title="Cervejas" />
-        </menu>
-    </item>
+
 
 </menu>
