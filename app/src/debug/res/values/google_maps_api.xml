@@ -19,9 +19,9 @@
 
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
-    -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB7b9v5FkkM18vGnnCzQI6wOZLqeBVc2Zk</string>
 
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB7b9v5FkkM18vGnnCzQI6wOZLqeBVc2Zk</string>
+    -->
 
     <!--
     DELL
@@ -44,6 +44,6 @@
 
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCUM7J-t0uHa9NHZGDAVe-NQEVnGMXqcio</string>
     -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCUM7J-t0uHa9NHZGDAVe-NQEVnGMXqcio</string>
 </resources>

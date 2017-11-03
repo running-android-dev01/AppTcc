@@ -113,6 +113,17 @@
             android:name=".SearchDrinkActivity"
             android:label="@string/title_activity_search_drink"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".estabelecimento.NomeEstabelecimentoActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".estabelecimento.EnderecoEstabelecimentoActivity"
+            android:label="@string/title_activity_endereco_estabelecimento"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".estabelecimento.MapaEstabelecimentoActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

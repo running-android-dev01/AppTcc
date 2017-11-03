@@ -71,5 +71,6 @@
 
     <string name="title_activity_new_avaliable">NewAvaliableActivity</string>
     <string name="title_activity_search_drink">SearchDrinkActivity</string>
+    <string name="title_activity_endereco_estabelecimento">EnderecoEstabelecimentoActivity</string>
 
 </resources>

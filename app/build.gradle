@@ -44,12 +44,17 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.android.gms:play-services-maps:11.4.2'
     compile 'com.firebase:geofire-android:2.1.1'
+    compile 'com.j256.ormlite:ormlite-android:5.0'
+    compile 'com.j256.ormlite:ormlite-core:5.0'
     // Required for local unit tests (JUnit 4 framework)
     testCompile 'junit:junit:4.12'
     // Required for instrumented tests
     androidTestCompile 'com.android.support:support-annotations:26.1.0'
     androidTestCompile 'com.android.support.test:runner:1.0.1'
 }
+
+
+
 
 
 

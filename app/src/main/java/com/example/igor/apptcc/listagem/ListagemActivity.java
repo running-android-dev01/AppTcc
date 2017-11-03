@@ -30,11 +30,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.BuildConfig;
 import com.example.igor.apptcc.EstabActivity;
 import com.example.igor.apptcc.MapsActivity;
 import com.example.igor.apptcc.R;
+import com.example.igor.apptcc.estabelecimento.NomeEstabelecimentoActivity;
 import com.example.igor.apptcc.model.EstabModel;
+import com.example.igor.apptcc.modelDb.Estabelecimento;
 import com.example.igor.apptcc.usuario.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,8 +60,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.j256.ormlite.dao.Dao;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 public class ListagemActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -207,7 +213,8 @@ public class ListagemActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_estab) {
-            Toast.makeText(this, "Click Novo Estab", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(ListagemActivity.this, NomeEstabelecimentoActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_avaliacao) {
             Toast.makeText(this, "Click Avaliacao", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_ajustes) {
@@ -361,62 +368,20 @@ public class ListagemActivity extends AppCompatActivity
 
 
     private void loadEstab(){
-        DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("date/establishment");
-        scoresRef.addChildEventListener(new ChildEventListener() {
+        try{
+            Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)this.getApplicationContext()).getHelper().getEstabelecimentoDao();
+            List<Estabelecimento> lEstabelecimento = estabelecimentoDao.queryForAll();
+            for (Estabelecimento estabelecimento: lEstabelecimento) {
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
+                        .title(estabelecimento.nome)
+                        .snippet(estabelecimento.enderecoCompleto));
 
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
-                refreshEstab(dataSnapshot);
+                marker.setTag(estabelecimento.id);
+                //hasMarker.put(dataSnapshot.getKey(), marker);
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildChanged: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
-                refreshEstab(dataSnapshot);
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
-                removeEstab(dataSnapshot);
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildMoved: The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
-                refreshEstab(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: The " + databaseError.toString());
-            }
-        });
-    }
-
-    private void refreshEstab(DataSnapshot dataSnapshot){
-        EstabModel estabModel = dataSnapshot.getValue(EstabModel.class);
-
-        removeEstab(dataSnapshot);
-
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(estabModel.latitude, estabModel.longitude))
-                .title(estabModel.name)
-                .snippet(estabModel.address));
-
-        marker.setTag(dataSnapshot.getKey());
-
-        hasMarker.put(dataSnapshot.getKey(), marker);
-
-    }
-
-    private void removeEstab(DataSnapshot dataSnapshot){
-        Marker marker = hasMarker.get(dataSnapshot.getKey());
-        if (marker!=null){
-            marker.remove();
+        }catch (SQLException ex){
+            Log.e(TAG, "ERRO = ", ex);
         }
-
-        hasMarker.remove(dataSnapshot.getKey());
     }
 }
