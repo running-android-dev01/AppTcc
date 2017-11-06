@@ -7,7 +7,6 @@ import android.location.Location;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -18,21 +17,13 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.igor.apptcc.EstabActivity;
 import com.example.igor.apptcc.R;
 import com.example.igor.apptcc.controller.EstabelecimentoController;
 import com.example.igor.apptcc.listagem.ListagemActivity;
 import com.example.igor.apptcc.modelDb.Estabelecimento;
 import com.example.igor.apptcc.service.FetchAddressIntentService;
-import com.example.igor.apptcc.service.FetchLocationIntentService;
 import com.example.igor.apptcc.utils.FetchAddressIntentUtils;
-import com.example.igor.apptcc.utils.FetchLocationIntentUtils;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,11 +32,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MapaEstabelecimentoActivity extends AppCompatActivity
+public class MapaAlterarEstabelecimentoActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
     private static final String TAG = MapaEstabelecimentoActivity.class.getSimpleName();
@@ -65,7 +55,6 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
     public static final String PARAM_LONGITUDE = PACKAGE_NAME + ".LONGITUDE";
 
     private String nome = "";
-    private String complemento = "";
     private String enderecoCompleto = "";
     private double latitude = 0.0;
     private double longitude = 0.0;
@@ -88,7 +77,7 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapa_estabelecimento);
+        setContentView(R.layout.activity_mapa_alterar_estabelecimento);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -105,7 +94,6 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
         }
 
         nome =  getIntent().getExtras().getString(PARAM_NOME, "");
-        complemento = getIntent().getExtras().getString(PARAM_COMPLEMENTO, "");
         enderecoCompleto = getIntent().getExtras().getString(PARAM_ENDERECO_COMPLETO, "");
         latitude = getIntent().getExtras().getDouble(PARAM_LATITUDE, 0.0);
         longitude = getIntent().getExtras().getDouble(PARAM_LONGITUDE, 0.0);
@@ -170,7 +158,7 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
         updateLocationUI();
         getDeviceLocation();
 
-        Marker marker = mMap.addMarker(new MarkerOptions()
+        mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
                 .title(nome)
                 .snippet(enderecoCompleto)
@@ -242,7 +230,7 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
     private View.OnClickListener clickSalvar = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            new AlertDialog.Builder(MapaEstabelecimentoActivity.this)
+            new AlertDialog.Builder(MapaAlterarEstabelecimentoActivity.this)
                     .setMessage("Confirma que a posição esta correta?")
                     .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
@@ -253,7 +241,7 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
                             location.setLatitude(latitude);
                             location.setLongitude(longitude);
 
-                            Intent intent = new Intent(MapaEstabelecimentoActivity.this, FetchAddressIntentService.class);
+                            Intent intent = new Intent(MapaAlterarEstabelecimentoActivity.this, FetchAddressIntentService.class);
                             intent.putExtra(FetchAddressIntentUtils.RECEIVER, mResultReceiverLocation);
                             intent.putExtra(FetchAddressIntentUtils.LOCATION_DATA_EXTRA, location);
                             startService(intent);
@@ -283,7 +271,6 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
             Estabelecimento estabelecimento = new Estabelecimento();
             estabelecimento.nome = nome.toUpperCase().trim();
             estabelecimento.endereco = pThoroughfare.toUpperCase().trim();
-            estabelecimento.complemento = complemento.toUpperCase().trim();
             estabelecimento.numero = pSubThoroughfare.toUpperCase().trim();
             estabelecimento.bairro = pSubLocality.toUpperCase().trim();
             estabelecimento.cidade = pLocality.toUpperCase().trim();
@@ -293,13 +280,13 @@ public class MapaEstabelecimentoActivity extends AppCompatActivity
             estabelecimento.latitude = latitude;
             estabelecimento.longitude = longitude;
 
-            EstabelecimentoController controller = new EstabelecimentoController();
-            controller.novoEstab(estabelecimento);
+            //EstabelecimentoController controller = new EstabelecimentoController();
+            //controller.novoEstab(estabelecimento);
 
-            Intent intent = new Intent(getApplicationContext(), ListagemActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            //Intent intent = new Intent(getApplicationContext(), ListagemActivity.class);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //startActivity(intent);
         }
     }
 }

@@ -2,14 +2,9 @@ package com.example.igor.apptcc.listagem;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -20,23 +15,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.BuildConfig;
-import com.example.igor.apptcc.EstabActivity;
-import com.example.igor.apptcc.MapsActivity;
 import com.example.igor.apptcc.R;
+import com.example.igor.apptcc.controller.EstabelecimentoController;
+import com.example.igor.apptcc.controller.IEstabelecimentoController;
+import com.example.igor.apptcc.estabelecimento.EstabelecimentoActivity;
 import com.example.igor.apptcc.estabelecimento.NomeEstabelecimentoActivity;
-import com.example.igor.apptcc.model.EstabModel;
 import com.example.igor.apptcc.modelDb.Estabelecimento;
 import com.example.igor.apptcc.usuario.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,19 +39,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -77,8 +62,6 @@ public class ListagemActivity extends AppCompatActivity
     View mapView;
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
-    private Button buttonProduto;
-    private LinearLayout buttonEstab;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -93,14 +76,15 @@ public class ListagemActivity extends AppCompatActivity
     private static final String KEY_LOCATION = "location";
 
     private HashMap<String, Marker> hasMarker = new HashMap<>();
+    private EstabelecimentoController estabelecimentoController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listagem2);
 
-        buttonProduto = findViewById(R.id.buttonProduto);
-        buttonEstab = findViewById(R.id.buttonEstab);
+        Button buttonProduto = findViewById(R.id.buttonProduto);
+        LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
 
         buttonProduto.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -171,7 +155,12 @@ public class ListagemActivity extends AppCompatActivity
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
+
+        estabelecimentoController = new EstabelecimentoController();
     }
+
+
+
 
     @Override
     protected void onStart() {
@@ -275,13 +264,11 @@ public class ListagemActivity extends AppCompatActivity
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                String key = marker.getTag().toString();
+                String key = (String) marker.getTag();
 
-                Intent i = new Intent(ListagemActivity.this, EstabActivity.class);
-                i.putExtra(EstabActivity.RECEIVER_KEY, key);
+                Intent i = new Intent(ListagemActivity.this, EstabelecimentoActivity.class);
+                i.putExtra(EstabelecimentoActivity.PARAM_ID_ESTABELECIMENTO, key);
                 startActivity(i);
-
-                //Toast.makeText(MapsActivity.this, marker.getTag().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -342,7 +329,8 @@ public class ListagemActivity extends AppCompatActivity
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
 
-        loadEstab();
+        carregarEstab();
+        estabelecimentoController.atualizarEstab(iEstabelecimentoController, ListagemActivity.this);
     }
 
     @Override
@@ -367,7 +355,8 @@ public class ListagemActivity extends AppCompatActivity
     }
 
 
-    private void loadEstab(){
+
+    private void carregarEstab(){
         try{
             Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)this.getApplicationContext()).getHelper().getEstabelecimentoDao();
             List<Estabelecimento> lEstabelecimento = estabelecimentoDao.queryForAll();
@@ -378,10 +367,39 @@ public class ListagemActivity extends AppCompatActivity
                         .snippet(estabelecimento.enderecoCompleto));
 
                 marker.setTag(estabelecimento.id);
-                //hasMarker.put(dataSnapshot.getKey(), marker);
+                hasMarker.put(estabelecimento.id, marker);
             }
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);
         }
     }
+
+
+    private IEstabelecimentoController iEstabelecimentoController = new IEstabelecimentoController() {
+        @Override
+        public void atualizarEstabelecimento(Estabelecimento estabelecimento) {
+            Marker marker = hasMarker.get(estabelecimento.id);
+            if (marker!=null){
+                marker.remove();
+                hasMarker.remove(estabelecimento.id);
+            }
+
+            marker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
+                    .title(estabelecimento.nome)
+                    .snippet(estabelecimento.enderecoCompleto));
+
+            marker.setTag(estabelecimento.id);
+            hasMarker.put(estabelecimento.id, marker);
+        }
+
+        @Override
+        public void excluirEstabelecimento(String id) {
+            Marker marker = hasMarker.get(id);
+            if (marker!=null){
+                marker.remove();
+                hasMarker.remove(id);
+            }
+        }
+    };
 }

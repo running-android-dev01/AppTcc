@@ -120,10 +120,22 @@
             android:name=".estabelecimento.EnderecoEstabelecimentoActivity"
             android:label="@string/title_activity_endereco_estabelecimento"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".estabelecimento.MapaEstabelecimentoActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".EstabelecimentoActivity"
+            android:label="@string/title_activity_estabelecimento"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".estabelecimento.EstabelecimentoActivity"
+            android:label="@string/title_activity_estabelecimento"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".estabelecimento.AlterarEstabelecimentoActivity"
+            android:label="@string/title_activity_alterar_estabelecimento"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".estabelecimento.MapaAlterarEstabelecimentoActivity"></activity>
     </application>
 
 </manifest>
