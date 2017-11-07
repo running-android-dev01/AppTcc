@@ -20,6 +20,7 @@ import com.example.igor.apptcc.modelDb.Estabelecimento;
 
 public class AlterarEstabelecimentoActivity extends AppCompatActivity {
     private static final String TAG = EstabelecimentoActivity.class.getSimpleName();
+    private static final int CT_ALTERAR_ENDERECO = 1;
 
     private static final String PACKAGE_NAME = EstabelecimentoActivity.class.getName();
     public static final String PARAM_ID_ESTABELECIMENTO = PACKAGE_NAME + ".ID_ESTABELECIMENTO";
@@ -67,25 +68,21 @@ public class AlterarEstabelecimentoActivity extends AppCompatActivity {
     private View.OnClickListener clickAtualizar = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(AlterarEstabelecimentoActivity.this, "CLICK ATUALIZAR", Toast.LENGTH_SHORT).show();
+            estabelecimentoController.atualizarEstab(estabelecimento);
+            finish();
         }
     };
 
     private View.OnClickListener clickEndereco = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Intent i = new Intent(AlterarEstabelecimentoActivity.this, MapaAlterarEstabelecimentoActivity.class);
+            i.putExtra(MapaAlterarEstabelecimentoActivity.PARAM_NOME, estabelecimento.nome);
+            i.putExtra(MapaAlterarEstabelecimentoActivity.PARAM_ENDERECO_COMPLETO, estabelecimento.enderecoCompleto);
+            i.putExtra(MapaAlterarEstabelecimentoActivity.PARAM_LATITUDE, estabelecimento.latitude);
+            i.putExtra(MapaAlterarEstabelecimentoActivity.PARAM_LONGITUDE, estabelecimento.longitude);
 
-            //Intent i = new Intent(AlterarEstabelecimentoActivity.this, MapaAlterarEstabelecimentoActivity.class);
-            //i.putExtra("")
-            //AlterarEstabelecimentoActivity.PARAM_NOME, "");
-            //AlterarEstabelecimentoActivity.PARAM_ENDERECO_COMPLETO, "");
-            //AlterarEstabelecimentoActivity.PARAM_LATITUDE, 0.0);
-            //AlterarEstabelecimentoActivity.PARAM_LONGITUDE, 0.0);
-
-            //startActivity(i);
-
-
-            Toast.makeText(AlterarEstabelecimentoActivity.this, "CLICK ENDERECO", Toast.LENGTH_SHORT).show();
+            startActivityForResult(i, CT_ALTERAR_ENDERECO);
         }
     };
 
@@ -99,4 +96,23 @@ public class AlterarEstabelecimentoActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==CT_ALTERAR_ENDERECO && resultCode==RESULT_OK){
+            estabelecimento.endereco = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_ENDERECO, "");
+            estabelecimento.numero = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_NUMERO, "");
+            estabelecimento.bairro = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_BAIRRO, "");
+            estabelecimento.cidade = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_CIDADE, "");
+            estabelecimento.uf = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_UF, "");
+            estabelecimento.pais = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_PAIS, "");
+            estabelecimento.enderecoCompleto = data.getExtras().getString(MapaAlterarEstabelecimentoActivity.PARAM_ENDERECO_COMPLETO, "");
+            estabelecimento.latitude = data.getExtras().getDouble(MapaAlterarEstabelecimentoActivity.PARAM_LATITUDE, 0);
+            estabelecimento.longitude = data.getExtras().getDouble(MapaAlterarEstabelecimentoActivity.PARAM_LONGITUDE, 0);
+
+            txtEnderecoAlterEstabelecimento.setText(estabelecimento.enderecoCompleto);
+        }
+    }
 }
+

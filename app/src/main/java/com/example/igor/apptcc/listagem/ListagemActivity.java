@@ -361,7 +361,13 @@ public class ListagemActivity extends AppCompatActivity
             Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)this.getApplicationContext()).getHelper().getEstabelecimentoDao();
             List<Estabelecimento> lEstabelecimento = estabelecimentoDao.queryForAll();
             for (Estabelecimento estabelecimento: lEstabelecimento) {
-                Marker marker = mMap.addMarker(new MarkerOptions()
+                Marker marker = hasMarker.get(estabelecimento.id);
+                if (marker!=null){
+                    marker.remove();
+                    hasMarker.remove(estabelecimento.id);
+                }
+
+                marker = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
                         .title(estabelecimento.nome)
                         .snippet(estabelecimento.enderecoCompleto));

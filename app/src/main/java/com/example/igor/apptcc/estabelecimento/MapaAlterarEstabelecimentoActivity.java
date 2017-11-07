@@ -19,9 +19,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.igor.apptcc.R;
-import com.example.igor.apptcc.controller.EstabelecimentoController;
-import com.example.igor.apptcc.listagem.ListagemActivity;
-import com.example.igor.apptcc.modelDb.Estabelecimento;
 import com.example.igor.apptcc.service.FetchAddressIntentService;
 import com.example.igor.apptcc.utils.FetchAddressIntentUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,19 +29,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MapaAlterarEstabelecimentoActivity extends AppCompatActivity
         implements OnMapReadyCallback {
-
-    private static final String TAG = MapaEstabelecimentoActivity.class.getSimpleName();
-
     private static final String PACKAGE_NAME = MapaEstabelecimentoActivity.class.getName();
 
     public static final String PARAM_NOME = PACKAGE_NAME + ".NOME";
     public static final String PARAM_ENDERECO = PACKAGE_NAME + ".ENDERECO";
-    public static final String PARAM_COMPLEMENTO = PACKAGE_NAME + ".COMPLEMENTO";
     public static final String PARAM_NUMERO = PACKAGE_NAME + ".NUMERO";
     public static final String PARAM_BAIRRO = PACKAGE_NAME + ".BAIRRO";
     public static final String PARAM_CIDADE = PACKAGE_NAME + ".CIDADE";
@@ -62,24 +53,17 @@ public class MapaAlterarEstabelecimentoActivity extends AppCompatActivity
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
 
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
 
-    private Button btn_salvar;
-
-    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_alterar_estabelecimento);
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
@@ -101,7 +85,7 @@ public class MapaAlterarEstabelecimentoActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        btn_salvar = findViewById(R.id.btn_salvar);
+        Button btn_salvar = findViewById(R.id.btn_salvar);
 
         btn_salvar.setOnClickListener(clickSalvar);
     }
@@ -268,25 +252,20 @@ public class MapaAlterarEstabelecimentoActivity extends AppCompatActivity
             String pLocality = resultData.getString(FetchAddressIntentUtils.RESULT_DATA_LOCALITY);
             String pCountryName = resultData.getString(FetchAddressIntentUtils.RESULT_DATA_COUNTRYNAME);
 
-            Estabelecimento estabelecimento = new Estabelecimento();
-            estabelecimento.nome = nome.toUpperCase().trim();
-            estabelecimento.endereco = pThoroughfare.toUpperCase().trim();
-            estabelecimento.numero = pSubThoroughfare.toUpperCase().trim();
-            estabelecimento.bairro = pSubLocality.toUpperCase().trim();
-            estabelecimento.cidade = pLocality.toUpperCase().trim();
-            estabelecimento.uf = pState.toUpperCase().trim();
-            estabelecimento.pais = pCountryName.toUpperCase().trim();
-            estabelecimento.enderecoCompleto = pAddress.toUpperCase().trim();
-            estabelecimento.latitude = latitude;
-            estabelecimento.longitude = longitude;
 
-            //EstabelecimentoController controller = new EstabelecimentoController();
-            //controller.novoEstab(estabelecimento);
+            Intent i = getIntent();
+            i.putExtra(PARAM_ENDERECO, pThoroughfare.toUpperCase().trim());
+            i.putExtra(PARAM_NUMERO, pSubThoroughfare.toUpperCase().trim());
+            i.putExtra(PARAM_BAIRRO, pSubLocality.toUpperCase().trim());
+            i.putExtra(PARAM_CIDADE, pLocality.toUpperCase().trim());
+            i.putExtra(PARAM_UF, pState.toUpperCase().trim());
+            i.putExtra(PARAM_PAIS, pCountryName.toUpperCase().trim());
+            i.putExtra(PARAM_ENDERECO_COMPLETO, pAddress.toUpperCase().trim());
+            i.putExtra(PARAM_LATITUDE, latitude);
+            i.putExtra(PARAM_LONGITUDE, longitude);
 
-            //Intent intent = new Intent(getApplicationContext(), ListagemActivity.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            //startActivity(intent);
+            setResult(RESULT_OK, i);
+            finish();
         }
     }
 }
