@@ -166,5 +166,6 @@
     <string name="title_activity_alterar_estabelecimento">AlterarEstabelecimentoActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_editar_estabelecimento">EditarEstabelecimentoActivity</string>
+    <string name="title_activity_info_estabelecimento">InfoEstabelecimentoActivity</string>
 
 </resources>

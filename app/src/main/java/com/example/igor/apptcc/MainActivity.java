@@ -23,11 +23,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igor.apptcc.controller.ControllerEstabelecimento;
 import com.example.igor.apptcc.controller.ControllerMapa;
 import com.example.igor.apptcc.controller.IControllerMapa;
 import com.example.igor.apptcc.estabelecimento.EditarEstabelecimentoActivity;
-import com.example.igor.apptcc.estabelecimento.NomeEstabelecimentoActivity;
+import com.example.igor.apptcc.estabelecimento.InfoEstabelecimentoActivity;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -272,19 +271,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onInfoWindowClick(Marker marker) {
                 String key = (String) marker.getTag();
-                ControllerEstabelecimento controllerEstabelecimento = new ControllerEstabelecimento();
-                Estabelecimento estabelecimento = controllerEstabelecimento.getEstabelecimento(MainActivity.this, key);
 
-                Intent i = new Intent(MainActivity.this, EditarEstabelecimentoActivity.class);
-                i.putExtra(EditarEstabelecimentoActivity.PARAM_ID, key);
-                i.putExtra(EditarEstabelecimentoActivity.PARAM_LATITUDE, estabelecimento.latitude);
-                i.putExtra(EditarEstabelecimentoActivity.PARAM_LONGITUDE, estabelecimento.longitude);
+                Intent i = new Intent(MainActivity.this, InfoEstabelecimentoActivity.class);
+                i.putExtra(InfoEstabelecimentoActivity.PARAM_ID, key);
 
                 startActivity(i);
-
-                //Intent i = new Intent(MainActivity.this, EstabelecimentoActivity.class);
-                //i.putExtra(EstabelecimentoActivity.PARAM_ID_ESTABELECIMENTO, key);
-                //startActivity(i);
             }
         });
 

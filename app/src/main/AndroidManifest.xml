@@ -144,7 +144,11 @@
             android:name=".estabelecimento.EditarEstabelecimentoActivity"
             android:label="@string/title_activity_editar_estabelecimento"
             android:theme="@style/AppTheme" />
-        <activity android:name=".estabelecimento.MapaEditarEstabelecimentoActivity"></activity>
+        <activity android:name=".estabelecimento.MapaEditarEstabelecimentoActivity" />
+        <activity
+            android:name=".estabelecimento.InfoEstabelecimentoActivity"
+            android:label="@string/title_activity_info_estabelecimento"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
