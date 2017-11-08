@@ -1,10 +1,11 @@
-package com.example.igor.apptcc.listagem;
+package com.example.igor.apptcc;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -22,15 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igor.apptcc.AppTccAplication;
-import com.example.igor.apptcc.BuildConfig;
-import com.example.igor.apptcc.R;
-import com.example.igor.apptcc.controller.EstabelecimentoController;
-import com.example.igor.apptcc.controller.IEstabelecimentoController;
-import com.example.igor.apptcc.estabelecimento.EstabelecimentoActivity;
+import com.example.igor.apptcc.controller.ControllerEstabelecimento;
+import com.example.igor.apptcc.controller.ControllerMapa;
+import com.example.igor.apptcc.controller.IControllerMapa;
+import com.example.igor.apptcc.estabelecimento.EditarEstabelecimentoActivity;
 import com.example.igor.apptcc.estabelecimento.NomeEstabelecimentoActivity;
-import com.example.igor.apptcc.modelDb.Estabelecimento;
-import com.example.igor.apptcc.usuario.LoginActivity;
+import com.example.igor.apptcc.model.Estabelecimento;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,54 +49,35 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public class ListagemActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
-    private static String TAG = ListagemActivity.class.getName();
-    private FirebaseAuth mAuth;
 
-    View mapView;
-    private GoogleMap mMap;
+    private static String TAG = MainActivity.class.getName();
+    private static final String KEY_CAMERA_POSITION = "camera_position";
+    private static final String KEY_LOCATION = "location";
+
     private CameraPosition mCameraPosition;
+    private Location mLastKnownLocation;
 
+    private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
-
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 
-    private Location mLastKnownLocation;
-
-    private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
+    private FirebaseAuth mAuth;
 
     private HashMap<String, Marker> hasMarker = new HashMap<>();
-    private EstabelecimentoController estabelecimentoController;
+    private ControllerMapa controllerMapa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listagem2);
-
-        Button buttonProduto = findViewById(R.id.buttonProduto);
-        LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
-
-        buttonProduto.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ListagemActivity.this, "Achar produto", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        buttonEstab.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ListagemActivity.this, "Achar estab", Toast.LENGTH_LONG).show();
-            }
-        });
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
@@ -107,13 +86,12 @@ public class ListagemActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser==null){
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            Intent intent = new Intent(getApplicationContext(), com.example.igor.apptcc.usuario.LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             return;
         }
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -135,12 +113,13 @@ public class ListagemActivity extends AppCompatActivity
         txtEmailUsuario.setText(currentUser.getEmail());
         txtVersaoUsuario.setText(BuildConfig.VERSION_NAME);
 
-        imgFotoUsuario.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ListagemActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
-            }
-        });
+        imgFotoUsuario.setOnClickListener(clickUsuario);
+
+        Button buttonProduto = findViewById(R.id.buttonProduto);
+        LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
+
+        buttonProduto.setOnClickListener(clickProduto);
+        buttonEstab.setOnClickListener(clickEstabelecimento);
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -155,12 +134,8 @@ public class ListagemActivity extends AppCompatActivity
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
-
-        estabelecimentoController = new EstabelecimentoController();
+        controllerMapa = new ControllerMapa();
     }
-
-
-
 
     @Override
     protected void onStart() {
@@ -195,19 +170,32 @@ public class ListagemActivity extends AppCompatActivity
         }
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_estab) {
-            Intent i = new Intent(ListagemActivity.this, NomeEstabelecimentoActivity.class);
+            double latitude = mLastKnownLocation.getLatitude();
+            double longitude = mLastKnownLocation.getLongitude();
+
+            Intent i = new Intent(MainActivity.this, EditarEstabelecimentoActivity.class);
+            i.putExtra(EditarEstabelecimentoActivity.PARAM_ID, "");
+            i.putExtra(EditarEstabelecimentoActivity.PARAM_LATITUDE, latitude);
+            i.putExtra(EditarEstabelecimentoActivity.PARAM_LONGITUDE, longitude);
+
             startActivity(i);
         } else if (id == R.id.nav_avaliacao) {
             Toast.makeText(this, "Click Avaliacao", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_ajustes) {
             Toast.makeText(this, "Click Ajustes", Toast.LENGTH_LONG).show();
+        } else if (id == R.id.nav_sair) {
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(), com.example.igor.apptcc.usuario.LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -216,27 +204,46 @@ public class ListagemActivity extends AppCompatActivity
     }
 
 
+    private View.OnClickListener clickUsuario = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(MainActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private View.OnClickListener clickProduto = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(MainActivity.this, "Achar produto", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private View.OnClickListener clickEstabelecimento = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(MainActivity.this, "Achar estab", Toast.LENGTH_LONG).show();
+        }
+    };
+
     @Override
-    public void onConnected(Bundle connectionHint) {
+    public void onConnected(@Nullable Bundle bundle) {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapView = mapFragment.getView();
         mapFragment.getMapAsync(this);
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "  + result.getErrorCode());
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
+    public void onConnectionSuspended(int i) {
         Log.d(TAG, "Play services connection suspended");
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
-        mMap = map;
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "  + connectionResult.getErrorCode());
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -265,10 +272,19 @@ public class ListagemActivity extends AppCompatActivity
             @Override
             public void onInfoWindowClick(Marker marker) {
                 String key = (String) marker.getTag();
+                ControllerEstabelecimento controllerEstabelecimento = new ControllerEstabelecimento();
+                Estabelecimento estabelecimento = controllerEstabelecimento.getEstabelecimento(MainActivity.this, key);
 
-                Intent i = new Intent(ListagemActivity.this, EstabelecimentoActivity.class);
-                i.putExtra(EstabelecimentoActivity.PARAM_ID_ESTABELECIMENTO, key);
+                Intent i = new Intent(MainActivity.this, EditarEstabelecimentoActivity.class);
+                i.putExtra(EditarEstabelecimentoActivity.PARAM_ID, key);
+                i.putExtra(EditarEstabelecimentoActivity.PARAM_LATITUDE, estabelecimento.latitude);
+                i.putExtra(EditarEstabelecimentoActivity.PARAM_LONGITUDE, estabelecimento.longitude);
+
                 startActivity(i);
+
+                //Intent i = new Intent(MainActivity.this, EstabelecimentoActivity.class);
+                //i.putExtra(EstabelecimentoActivity.PARAM_ID_ESTABELECIMENTO, key);
+                //startActivity(i);
             }
         });
 
@@ -330,7 +346,7 @@ public class ListagemActivity extends AppCompatActivity
         }
 
         carregarEstab();
-        estabelecimentoController.atualizarEstab(iEstabelecimentoController, ListagemActivity.this);
+        controllerMapa.atualizarMapa(iControllerMapa, MainActivity.this);
     }
 
     @Override
@@ -354,53 +370,52 @@ public class ListagemActivity extends AppCompatActivity
         }
     }
 
-
-
     private void carregarEstab(){
-        /*try{
+        try{
             Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)this.getApplicationContext()).getHelper().getEstabelecimentoDao();
             List<Estabelecimento> lEstabelecimento = estabelecimentoDao.queryForAll();
             for (Estabelecimento estabelecimento: lEstabelecimento) {
-                Marker marker = hasMarker.get(estabelecimento.id);
-                if (marker!=null){
-                    marker.remove();
+                Marker m = hasMarker.get(estabelecimento.id);
+                if (m!=null){
+                    m.remove();
                     hasMarker.remove(estabelecimento.id);
                 }
 
-                marker = mMap.addMarker(new MarkerOptions()
+                Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
                         .title(estabelecimento.nome)
-                        .snippet(estabelecimento.enderecoCompleto));
+                        .snippet(estabelecimento.endereco));
 
                 marker.setTag(estabelecimento.id);
                 hasMarker.put(estabelecimento.id, marker);
             }
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);
-        }*/
+        }
     }
 
 
-    private IEstabelecimentoController iEstabelecimentoController = new IEstabelecimentoController() {
+    private IControllerMapa iControllerMapa = new IControllerMapa() {
+
         @Override
-        public void atualizarEstabelecimento(Estabelecimento estabelecimento) {
-            Marker marker = hasMarker.get(estabelecimento.id);
-            if (marker!=null){
-                marker.remove();
+        public void atualizarMapa(Estabelecimento estabelecimento) {
+            Marker m = hasMarker.get(estabelecimento.id);
+            if (m!=null){
+                m.remove();
                 hasMarker.remove(estabelecimento.id);
             }
 
-            marker = mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
                     .title(estabelecimento.nome)
-                    .snippet(estabelecimento.enderecoCompleto));
+                    .snippet(estabelecimento.endereco));
 
             marker.setTag(estabelecimento.id);
             hasMarker.put(estabelecimento.id, marker);
         }
 
         @Override
-        public void excluirEstabelecimento(String id) {
+        public void excluirMapa(String id) {
             Marker marker = hasMarker.get(id);
             if (marker!=null){
                 marker.remove();

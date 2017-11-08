@@ -24,6 +24,7 @@ import java.util.List;
 public class NomeEstabelecimentoActivity extends AppCompatActivity {
     private static final String TAG = NomeEstabelecimentoActivity.class.getSimpleName();
 
+
     EditText input_nome;
     Button btn_avancar;
 
@@ -77,7 +78,7 @@ public class NomeEstabelecimentoActivity extends AppCompatActivity {
     }
 
     private boolean validarEstabelecimento(){
-        try{
+        /*try{
 
             if (TextUtils.isEmpty(input_nome.getText().toString())){
                 input_nome.setError("Informe o nome");
@@ -94,7 +95,7 @@ public class NomeEstabelecimentoActivity extends AppCompatActivity {
         }catch (SQLException ex){
             Log.e(TAG, "ERRO =", ex);
             return false;
-        }
+        }*/
         return true;
     }
 

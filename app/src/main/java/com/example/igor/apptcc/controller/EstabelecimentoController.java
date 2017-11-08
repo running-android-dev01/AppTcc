@@ -45,6 +45,7 @@ public class EstabelecimentoController {
     public static void atualizarEstab(Estabelecimento estabelecimento){
         DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("data/estabelecimento/" + estabelecimento.id);
 
+
         HashMap<String, Object> postValues = new HashMap<>();
         postValues.put("nome", estabelecimento.nome);
         postValues.put("endereco", estabelecimento.endereco);
@@ -63,11 +64,11 @@ public class EstabelecimentoController {
 
     Dao<Estabelecimento, Integer> getEstabelecimentoDao(Context ctx) throws SQLException{
         Dao<Estabelecimento, Integer> estabelecimentoDao = null;
-        try{
+        /*try{
             estabelecimentoDao = ((AppTccAplication)ctx.getApplicationContext()).getHelper().getEstabelecimentoDao();
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);
-        }
+        }*/
         return estabelecimentoDao;
     }
 
