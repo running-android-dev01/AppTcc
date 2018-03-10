@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,6 +40,8 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
     private TextView txtNomeEstabelecimento;
     private TextView txtEnderecoEstabelecimento;
 
+    private RecyclerView rcwProdutos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +59,22 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
         txtAvaliacaoEstabelecimento = findViewById(R.id.txtAvaliacaoEstabelecimento);
         txtNomeEstabelecimento = findViewById(R.id.txtNomeEstabelecimento);
         txtEnderecoEstabelecimento = findViewById(R.id.txtEnderecoEstabelecimento);
+        rcwProdutos = findViewById(R.id.rcwProdutos);
 
         ImageButton imbEditar = findViewById(R.id.imbEditar);
         imbEditar.setOnClickListener(clickEditar);
     }
+
+    private void setupRecycler() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rcwProdutos.setLayoutManager(layoutManager);
+
+        //mAdapter = new LineAdapter(new ArrayList<>(0));
+        //rcwProdutos.setAdapter(mAdapter);
+
+        rcwProdutos.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+    }
+
 
     @Override
     protected void onResume() {

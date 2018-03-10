@@ -8,7 +8,7 @@ import com.example.igor.apptcc.Constants;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.EstabelecimentoAvaliacao;
 import com.example.igor.apptcc.model.Produto;
-import com.example.igor.apptcc.model.ProdutoAvaliacao;;
+import com.example.igor.apptcc.model.ProdutoAvaliacao;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
