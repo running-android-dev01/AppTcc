@@ -19,7 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.example.igor.apptcc.MapsActivity;
+import com.example.igor.apptcc.MainActivity;
 import com.example.igor.apptcc.R;
 import com.example.igor.apptcc.utils.LocationUpdatesUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -240,7 +240,7 @@ public class LocationUpdatesService extends Service {
 
         // The PendingIntent to launch activity.
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MapsActivity.class), 0);
+                new Intent(this, MainActivity.class), 0);
 
         return new NotificationCompat.Builder(this)
                 .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),

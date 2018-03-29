@@ -167,5 +167,23 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_editar_estabelecimento">EditarEstabelecimentoActivity</string>
     <string name="title_activity_info_estabelecimento">InfoEstabelecimentoActivity</string>
+    <string name="title_activity_editar_produto">EditarProdutoActivity</string>
+    <string name="title_activity_info_produto">InfoProdutoActivity</string>
+    <string name="title_activity_editar_produto_avaliacao">EditarProdutoAvaliacao</string>
+    <string name="title_activity_editar_estabelecimento_avaliacao">
+        EditarEstabelecimentoAvaliacaoActivity
+    </string>
+    <string name="title_activity_info_estabelecimento_establiacao">
+        InfoEstabelecimentoEstabliacaoActivity
+    </string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+
+    <string name="title_estabelecimento">Estabelecimento</string>
+    <string name="title_produtos">Produto</string>
+    <string name="title_avaliacao">Avaliacao</string>
+    <string name="title_activity_pesquisar">PesquisarActivity</string>
 
 </resources>

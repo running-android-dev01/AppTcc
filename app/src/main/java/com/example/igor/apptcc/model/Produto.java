@@ -14,11 +14,27 @@ public class Produto {
     public String nome;
 
     @DatabaseField
-    public double preco;
+    public float preco;
 
     @DatabaseField
     public String descricao;
 
     @DatabaseField
-    public int avaliacao;
+    public long avaliacao;
+
+
+    @DatabaseField
+    public String estabelecimento_nome;
+
+    @DatabaseField
+    public String estabelecimento_endereco;
+
+    @DatabaseField
+    public String estabelecimento_referencia;
+
+    @DatabaseField
+    public double estabelecimento_latitude;
+
+    @DatabaseField
+    public double estabelecimento_longitude;
 }

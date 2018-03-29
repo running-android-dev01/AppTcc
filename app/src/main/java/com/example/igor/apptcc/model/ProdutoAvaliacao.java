@@ -10,16 +10,19 @@ public class ProdutoAvaliacao {
     public String id_produto;
 
     @DatabaseField
+    public String id_estabelecimento;
+
+    @DatabaseField
     public String nome;
 
     @DatabaseField
-    public double uid;
+    public String uid;
 
     @DatabaseField
     public String data;
 
     @DatabaseField
-    public int avaliacao;
+    public long avaliacao;
 
     @DatabaseField
     public String descricao;
