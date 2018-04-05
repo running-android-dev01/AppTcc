@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_produto"
+        android:icon="@drawable/ic_local_drink_black_24dp"
+        android:title="@string/title_produtos" />
+
+    <item
+        android:id="@+id/navigation_avaliacao"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_avaliacao" />
+</menu>

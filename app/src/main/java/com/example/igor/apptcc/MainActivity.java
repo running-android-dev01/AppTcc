@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -17,9 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +27,7 @@ import com.example.igor.apptcc.controller.IControllerMapa;
 import com.example.igor.apptcc.estabelecimento.EditarEstabelecimentoActivity;
 import com.example.igor.apptcc.estabelecimento.InfoEstabelecimentoActivity;
 import com.example.igor.apptcc.model.Estabelecimento;
+import com.example.igor.apptcc.pesquisar.PesquisarActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -114,11 +114,18 @@ public class MainActivity extends AppCompatActivity
 
         imgFotoUsuario.setOnClickListener(clickUsuario);
 
-        Button buttonProduto = findViewById(R.id.buttonProduto);
-        LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
 
-        buttonProduto.setOnClickListener(clickProduto);
-        buttonEstab.setOnClickListener(clickEstabelecimento);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(clickFab);
+
+        //Button buttonProduto = findViewById(R.id.buttonProduto);
+        //LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
+
+        //buttonProduto.setOnClickListener(clickProduto);
+        //buttonEstab.setOnClickListener(clickEstabelecimento);
+
+
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -135,6 +142,15 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient.connect();
         controllerMapa = new ControllerMapa();
     }
+
+
+    private View.OnClickListener clickFab = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent(MainActivity.this, PesquisarActivity.class);
+            startActivity(i);
+        }
+    };
 
     @Override
     protected void onStart() {

@@ -23,7 +23,6 @@
         -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB7b9v5FkkM18vGnnCzQI6wOZLqeBVc2Zk</string>
 
-
     <!--
     DELL
     TODO: Before you run your application, you need a Google Maps API key.

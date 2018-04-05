@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igor.apptcc.MainActivity;
 import com.example.igor.apptcc.R;
-import com.example.igor.apptcc.listagem.ListagemActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -39,7 +39,7 @@ public class NovoLoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser!=null){
-            Intent intent = new Intent(getApplicationContext(), ListagemActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -112,7 +112,7 @@ public class NovoLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Intent intent = new Intent(getApplicationContext(), ListagemActivity.class);
+                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 startActivity(intent);

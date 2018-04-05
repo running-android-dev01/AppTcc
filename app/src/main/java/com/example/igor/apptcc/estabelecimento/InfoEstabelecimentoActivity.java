@@ -2,8 +2,9 @@ package com.example.igor.apptcc.estabelecimento;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +14,16 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
+import com.example.igor.apptcc.controller.ControllerEstabelecimento;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.EstabelecimentoAvaliacao;
+import com.example.igor.apptcc.model.Produto;
+import com.example.igor.apptcc.produto.AdapterProduto;
+import com.example.igor.apptcc.produto.EditarProdutoActivity;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -34,13 +38,71 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
     private String id_estabelecimento;
     private Estabelecimento estabelecimento;
 
-
-    //private ImageView imgEstabelecimentoFoto;
     private TextView txtAvaliacaoEstabelecimento;
     private TextView txtNomeEstabelecimento;
     private TextView txtEnderecoEstabelecimento;
 
+    private TextView txtProdutoAvaliacao;
+
+    private TextView txtEmptyAvaliacao;
+    private TextView txtEmptyProdutos;
     private RecyclerView rcwProdutos;
+
+    private Boolean telaProduto = true;
+
+
+    private AdapterProduto adapterProduto;
+    private AdapterEstabelecimentoAvaliacao adapterEstabelecimentoAvaliacao;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_produto:
+                    telaProduto = true;
+                    try{
+                        rcwProdutos.setAdapter(adapterProduto);
+                        txtProdutoAvaliacao.setText(getString(R.string.title_produtos));
+
+                        Dao<Produto, Integer> produtoDao = ((AppTccAplication)getApplicationContext()).getHelper().getProdutoDao();
+                        List<Produto> lProduto = produtoDao.queryBuilder().orderBy("avaliacao", false).where().eq("id_estabelecimento", id_estabelecimento).query();
+                        adapterProduto.atualizarLista(lProduto);
+
+                        rcwProdutos.setVisibility(lProduto.size()>0?View.VISIBLE:View.GONE);
+                        txtEmptyProdutos.setVisibility(lProduto.size()==0?View.VISIBLE:View.GONE);
+
+                        //rcwAvaliacao.setVisibility(View.GONE);
+                        txtEmptyAvaliacao.setVisibility(View.GONE);
+                    }catch (SQLException ex){
+                        Log.e(TAG, "ERRO = ", ex);
+                    }
+                    return true;
+                case R.id.navigation_avaliacao:
+                    telaProduto = false;
+                    try{
+                        rcwProdutos.setAdapter(adapterEstabelecimentoAvaliacao);
+                        txtProdutoAvaliacao.setText(getString(R.string.title_avaliacao));
+
+                        Dao<EstabelecimentoAvaliacao, Integer> estabelecimentoAvaliacaoDao = ((AppTccAplication)getApplicationContext()).getHelper().getEstabelecimentoAvaliacaoDao();
+                        List<EstabelecimentoAvaliacao> lEstabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().orderBy("data", false).where().eq("id_estabelecimento", id_estabelecimento).query();
+                        adapterEstabelecimentoAvaliacao.atualizarLista(lEstabelecimentoAvaliacao);
+
+                        rcwProdutos.setVisibility(lEstabelecimentoAvaliacao.size()>0?View.VISIBLE:View.GONE);
+                        txtEmptyAvaliacao.setVisibility(lEstabelecimentoAvaliacao.size()==0?View.VISIBLE:View.GONE);
+
+                        //rcwProdutos.setVisibility(View.GONE);
+                        txtEmptyProdutos.setVisibility(View.GONE);
+                    }catch (SQLException ex){
+                        Log.e(TAG, "ERRO = ", ex);
+                    }
+                    return true;
+            }
+            return false;
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +123,44 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
         txtEnderecoEstabelecimento = findViewById(R.id.txtEnderecoEstabelecimento);
         rcwProdutos = findViewById(R.id.rcwProdutos);
 
+        txtProdutoAvaliacao = findViewById(R.id.txtProdutoAvaliacao);
+        txtProdutoAvaliacao.setText(getString(R.string.title_produtos));
+
+        txtEmptyProdutos = findViewById(R.id.txtEmptyProdutos);
+
+        txtEmptyProdutos.setVisibility(View.GONE);
+
+        txtEmptyAvaliacao = findViewById(R.id.txtEmptyAvaliacao);
+
+        txtEmptyAvaliacao.setVisibility(View.GONE);
+
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(clickFab);
+
+
         ImageButton imbEditar = findViewById(R.id.imbEditar);
         imbEditar.setOnClickListener(clickEditar);
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+        ControllerEstabelecimento controllerEstabelecimento = new ControllerEstabelecimento();
+        controllerEstabelecimento.atualizarInfomacoes(this, id_estabelecimento);
+
+        setupRecycler();
     }
 
     private void setupRecycler() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rcwProdutos.setLayoutManager(layoutManager);
 
-        //mAdapter = new LineAdapter(new ArrayList<>(0));
-        //rcwProdutos.setAdapter(mAdapter);
+        adapterProduto = new AdapterProduto(this);
+        rcwProdutos.setAdapter(adapterProduto);
 
         rcwProdutos.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterEstabelecimentoAvaliacao = new AdapterEstabelecimentoAvaliacao(this);
     }
 
 
@@ -106,10 +194,32 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener clickFab = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if (telaProduto){
+                Intent i = new Intent(InfoEstabelecimentoActivity.this, EditarProdutoActivity.class);
+                i.putExtra(EditarProdutoActivity.PARAM_ID, "");
+                i.putExtra(EditarProdutoActivity.PARAM_ID_ESTABELECIMENTO, id_estabelecimento);
+
+                startActivity(i);
+            }else{
+                Intent i = new Intent(InfoEstabelecimentoActivity.this, EditarEstabelecimentoAvaliacaoActivity.class);
+                i.putExtra(EditarEstabelecimentoAvaliacaoActivity.PARAM_ID_ESTABELECIMENTO, estabelecimento.id);
+
+                startActivity(i);
+            }
+
+        }
+    };
+
+
+
     private void carregarDados(){
         try{
             Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)getApplicationContext()).getHelper().getEstabelecimentoDao();
             Dao<EstabelecimentoAvaliacao, Integer> estabelecimentoAvaliacaoDao = ((AppTccAplication)getApplicationContext()).getHelper().getEstabelecimentoAvaliacaoDao();
+            Dao<Produto, Integer> produtoDao = ((AppTccAplication)getApplicationContext()).getHelper().getProdutoDao();
 
             estabelecimento = estabelecimentoDao.queryBuilder().where().eq("id", id_estabelecimento).queryForFirst();
 
@@ -117,9 +227,31 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
             txtEnderecoEstabelecimento.setText(estabelecimento.endereco);
             txtAvaliacaoEstabelecimento.setText(Long.toString(estabelecimento.avaliacao));
 
-            List<EstabelecimentoAvaliacao> lEstabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().limit((long)5).orderBy("data", false).where().eq("id_estabelecimento", id_estabelecimento).query();
-            if (lEstabelecimentoAvaliacao.size()==0){
-                txtAvaliacaoEstabelecimento.setText("N/A");
+
+
+            if (telaProduto){
+                List<Produto> lProduto = produtoDao.queryBuilder().orderBy("avaliacao", false).where().eq("id_estabelecimento", id_estabelecimento).query();
+                adapterProduto.atualizarLista(lProduto);
+
+                List<EstabelecimentoAvaliacao> lEstabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().limit((long)5).orderBy("data", false).where().eq("id_estabelecimento", id_estabelecimento).query();
+                if (lEstabelecimentoAvaliacao.size()==0){
+                    txtAvaliacaoEstabelecimento.setText("N/A");
+                }
+
+                rcwProdutos.setVisibility(lProduto.size()>0?View.VISIBLE:View.GONE);
+                txtEmptyProdutos.setVisibility(lProduto.size()==0?View.VISIBLE:View.GONE);
+
+                txtEmptyAvaliacao.setVisibility(View.GONE);
+            }else{
+                List<EstabelecimentoAvaliacao> lEstabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().orderBy("data", false).where().eq("id_estabelecimento", id_estabelecimento).query();
+                if (lEstabelecimentoAvaliacao.size()==0){
+                    txtAvaliacaoEstabelecimento.setText("N/A");
+                }
+
+                rcwProdutos.setVisibility(lEstabelecimentoAvaliacao.size()>0?View.VISIBLE:View.GONE);
+                txtEmptyProdutos.setVisibility(View.GONE);
+
+                txtEmptyAvaliacao.setVisibility(lEstabelecimentoAvaliacao.size()==0?View.VISIBLE:View.GONE);
             }
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);

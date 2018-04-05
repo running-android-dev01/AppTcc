@@ -2,8 +2,6 @@ package com.example.igor.apptcc.estabelecimento;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
 import com.example.igor.apptcc.controller.ControllerEstabelecimento;
-import com.example.igor.apptcc.controller.EstabelecimentoController;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.j256.ormlite.dao.Dao;
 
@@ -104,11 +101,10 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
             estabelecimento.longitude = longitude;
             estabelecimento.latitude = latitude;
 
-            ControllerEstabelecimento controllerEstabelecimento = new ControllerEstabelecimento();
             if (TextUtils.isEmpty(id_estabelecimento)){
-                controllerEstabelecimento.incluir(estabelecimento);
+                ControllerEstabelecimento.incluir(estabelecimento);
             }else{
-                controllerEstabelecimento.atualizar(estabelecimento);
+                ControllerEstabelecimento.atualizar(estabelecimento);
             }
             finish();
         }

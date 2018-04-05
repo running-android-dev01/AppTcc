@@ -18,15 +18,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -45,97 +36,18 @@
             android:name=".usuario.NovoLoginActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".listagem.ListagemActivity"
-            android:label="@string/title_activity_listagem"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-
-        <!-- ANTIGO -->
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme" />
 
         <service
             android:name=".service.LocationUpdatesService"
             android:enabled="true"
             android:exported="true" />
-
-        <activity
-            android:name=".CadastroEstabActivity"
-            android:label="@string/title_activity_cadastro_estab"
-            android:theme="@style/AppTheme" />
-
         <service
             android:name=".service.FetchAddressIntentService"
             android:exported="false" />
-
-        <activity
-            android:name=".CadastroEstabMapaActivity"
-            android:label="@string/title_activity_cadastro_estab_mapa"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".NewEstabActivity"
-            android:label="@string/title_activity_new_estab"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_new_estab"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".SignupActivity"
-            android:label="@string/title_activity_new_estab"
-            android:theme="@style/AppTheme" />
-
         <service
             android:name=".service.FetchLocationIntentService"
             android:exported="false" />
 
-        <receiver
-            android:name=".broadcastReceiver.TokenBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
-
-        <activity
-            android:name=".EstabActivity"
-            android:label="@string/title_activity_estab"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".utils.NewDrink"
-            android:label="@string/title_activity_new_drink"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".NewAvaliableActivity"
-            android:label="@string/title_activity_new_avaliable"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".SearchDrinkActivity"
-            android:label="@string/title_activity_search_drink"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".estabelecimento.NomeEstabelecimentoActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".estabelecimento.EnderecoEstabelecimentoActivity"
-            android:label="@string/title_activity_endereco_estabelecimento"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".estabelecimento.MapaEstabelecimentoActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".EstabelecimentoActivity"
-            android:label="@string/title_activity_estabelecimento"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".estabelecimento.EstabelecimentoActivity"
-            android:label="@string/title_activity_estabelecimento"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".estabelecimento.AlterarEstabelecimentoActivity"
-            android:label="@string/title_activity_alterar_estabelecimento"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".estabelecimento.MapaAlterarEstabelecimentoActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -148,7 +60,26 @@
         <activity
             android:name=".estabelecimento.InfoEstabelecimentoActivity"
             android:label="@string/title_activity_info_estabelecimento"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".produto.EditarProdutoActivity"
+            android:label="@string/title_activity_editar_produto"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".produto.InfoProdutoActivity"
+            android:label="@string/title_activity_info_produto"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".produto.EditarProdutoAvaliacaoActivity"
+            android:label="@string/title_activity_editar_produto_avaliacao"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".estabelecimento.EditarEstabelecimentoAvaliacaoActivity"
+            android:label="@string/title_activity_editar_estabelecimento_avaliacao"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".pesquisar.PesquisarActivity"
+            android:label="@string/title_activity_pesquisar" />
     </application>
 
 </manifest>

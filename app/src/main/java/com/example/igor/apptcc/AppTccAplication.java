@@ -3,7 +3,6 @@ package com.example.igor.apptcc;
 import android.app.Application;
 
 import com.example.igor.apptcc.banco.DBHelper;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 

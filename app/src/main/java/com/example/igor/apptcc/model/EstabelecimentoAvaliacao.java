@@ -13,13 +13,13 @@ public class EstabelecimentoAvaliacao {
     public String nome;
 
     @DatabaseField
-    public double uid;
+    public String uid;
 
     @DatabaseField
     public String data;
 
     @DatabaseField
-    public int avaliacao;
+    public long avaliacao;
 
     @DatabaseField
     public String descricao;
