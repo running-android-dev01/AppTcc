@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AppTcc.iml" filepath="$PROJECT_DIR$/AppTcc.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/appbar/appbar.iml" filepath="$PROJECT_DIR$/appbar/appbar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/appfarmacia/appfarmacia.iml" filepath="$PROJECT_DIR$/appfarmacia/appfarmacia.iml" />
+      <module fileurl="file://$PROJECT_DIR$/appseguranca/appseguranca.iml" filepath="$PROJECT_DIR$/appseguranca/appseguranca.iml" />
     </modules>
   </component>
 </project>
