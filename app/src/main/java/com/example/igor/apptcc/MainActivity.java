@@ -147,7 +147,13 @@ public class MainActivity extends AppCompatActivity
     private View.OnClickListener clickFab = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
+            double latitude = mLastKnownLocation.getLatitude();
+            double longitude = mLastKnownLocation.getLongitude();
+
             Intent i = new Intent(MainActivity.this, PesquisarActivity.class);
+
+            i.putExtra(PesquisarActivity.PARAM_LATITUDE, latitude);
+            i.putExtra(PesquisarActivity.PARAM_LONGITUDE, longitude);
             startActivity(i);
         }
     };
