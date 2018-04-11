@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
 import com.example.igor.apptcc.controller.ControllerEstabelecimento;
+import com.example.igor.apptcc.controller.ControllerEstabelecimentoAvaliacao;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.EstabelecimentoAvaliacao;
 import com.example.igor.apptcc.utils.DateUtils;
@@ -91,7 +92,7 @@ public class EditarEstabelecimentoAvaliacaoActivity extends AppCompatActivity {
             estabelecimentoAvaliacao.avaliacao = (long) erAvaliacao.getRating();
             estabelecimentoAvaliacao.descricao = edtDescricaoProduto.getText().toString();
 
-            ControllerEstabelecimento.incluirAvaliacao(id_estabelecimento, estabelecimentoAvaliacao);
+            ControllerEstabelecimentoAvaliacao.incluir(id_estabelecimento, estabelecimentoAvaliacao);
 
 
             long total = lEstabelecimentoAvaliacao.size() + 1;

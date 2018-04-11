@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
 import com.example.igor.apptcc.controller.ControllerProduto;
+import com.example.igor.apptcc.controller.ControllerProdutoAvaliacao;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.Produto;
 import com.example.igor.apptcc.model.ProdutoAvaliacao;
@@ -97,7 +98,7 @@ public class EditarProdutoAvaliacaoActivity extends AppCompatActivity {
             produtoAvaliacao.avaliacao = (long) erAvaliacao.getRating();
             produtoAvaliacao.descricao = edtDescricaoProduto.getText().toString();
 
-            ControllerProduto.incluirAvaliacao(id_estabelecimento, id_produto, produtoAvaliacao);
+            ControllerProdutoAvaliacao.incluir(id_estabelecimento, id_produto, produtoAvaliacao);
 
 
             long total = lProdutoAvaliacao.size() + 1;

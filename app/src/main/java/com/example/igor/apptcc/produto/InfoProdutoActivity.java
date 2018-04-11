@@ -80,9 +80,6 @@ public class InfoProdutoActivity extends AppCompatActivity {
 
         imbEditar.setOnClickListener(clickEditar);
 
-        ControllerProduto controllerProduto = new ControllerProduto();
-        controllerProduto.atualizarAvaliacoes(this, id_estabelecimento, id_produto);
-
         setupRecycler();
     }
 

@@ -145,10 +145,6 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
-        ControllerEstabelecimento controllerEstabelecimento = new ControllerEstabelecimento();
-        controllerEstabelecimento.atualizarInfomacoes(this, id_estabelecimento);
-
         setupRecycler();
     }
 
@@ -244,6 +240,7 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
                 txtEmptyAvaliacao.setVisibility(View.GONE);
             }else{
                 List<EstabelecimentoAvaliacao> lEstabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().orderBy("data", false).where().eq("id_estabelecimento", id_estabelecimento).query();
+                adapterEstabelecimentoAvaliacao.atualizarLista(lEstabelecimentoAvaliacao);
                 if (lEstabelecimentoAvaliacao.size()==0){
                     txtAvaliacaoEstabelecimento.setText("N/A");
                 }

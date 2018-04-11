@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.igor.apptcc.MainActivity;
 import com.example.igor.apptcc.R;
+import com.example.igor.apptcc.utils.ConnectivityManagerHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -55,6 +56,11 @@ public class LoginActivity extends AppCompatActivity
     private View.OnClickListener clickAcessar = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            if (!ConnectivityManagerHelper.isConnectedOrConnecting(LoginActivity.this)){
+                Toast.makeText(LoginActivity.this, "Para fazer o login precisa estar online!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             final String email = edtEmail.getText().toString();
             final String senha = edtSenha.getText().toString();
 
