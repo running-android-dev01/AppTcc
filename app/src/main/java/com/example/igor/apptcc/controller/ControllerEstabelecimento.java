@@ -6,12 +6,8 @@ import android.util.Log;
 
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.model.Estabelecimento;
-import com.example.igor.apptcc.model.EstabelecimentoAvaliacao;
-import com.example.igor.apptcc.model.Produto;
 import com.example.igor.apptcc.utils.DateUtils;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.j256.ormlite.dao.Dao;
@@ -19,7 +15,6 @@ import com.j256.ormlite.dao.Dao;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 public class ControllerEstabelecimento {
     private static String TAG = ControllerEstabelecimento.class.getName();
@@ -36,7 +31,7 @@ public class ControllerEstabelecimento {
                 .apply();
     }
 
-    public static void setDellEstab(Context context, String id_estab) {
+    private static void setDellEstab(Context context, String id_estab) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(KEY_DELL_ESTAB, id_estab)
@@ -53,30 +48,27 @@ public class ControllerEstabelecimento {
 
         try{
             Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)context.getApplicationContext()).getHelper().getEstabelecimentoDao();
-            estabelecimentoDao.callBatchTasks(new Callable<Object>() {
-                @Override
-                public Object call() {
-                    try{
-                        Estabelecimento estabelecimento = estabelecimentoDao.queryBuilder().where().eq("id", id).queryForFirst();
+            estabelecimentoDao.callBatchTasks(() -> {
+                try{
+                    Estabelecimento estabelecimento = estabelecimentoDao.queryBuilder().where().eq("id", id).queryForFirst();
 
-                        if (estabelecimento==null){
-                            estabelecimento = new Estabelecimento();
-                            estabelecimento.id = id;
-                        }
-
-                        estabelecimento.nome = (String)hashMap.get("nome");
-                        estabelecimento.endereco = (String)hashMap.get("endereco");
-                        estabelecimento.referencia = (String)hashMap.get("referencia");
-                        estabelecimento.latitude = (Double)hashMap.get("latitude");
-                        estabelecimento.longitude = (Double)hashMap.get("longitude");
-                        estabelecimento.avaliacao = (long)hashMap.get("avaliacao");
-
-                        estabelecimentoDao.createOrUpdate(estabelecimento);
-                    }catch (SQLException ex){
-                        Log.e(TAG, "ERRO = ", ex);
+                    if (estabelecimento==null){
+                        estabelecimento = new Estabelecimento();
+                        estabelecimento.id = id;
                     }
-                    return null;
+
+                    estabelecimento.nome = (String)hashMap.get("nome");
+                    estabelecimento.endereco = (String)hashMap.get("endereco");
+                    estabelecimento.referencia = (String)hashMap.get("referencia");
+                    estabelecimento.latitude = (Double)hashMap.get("latitude");
+                    estabelecimento.longitude = (Double)hashMap.get("longitude");
+                    estabelecimento.avaliacao = (long)hashMap.get("avaliacao");
+
+                    estabelecimentoDao.createOrUpdate(estabelecimento);
+                }catch (SQLException ex){
+                    Log.e(TAG, "ERRO = ", ex);
                 }
+                return null;
             });
 
         }catch (Exception ex){
@@ -88,20 +80,17 @@ public class ControllerEstabelecimento {
         final String id = dataSnapshot.getKey();
         try{
             Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)context.getApplicationContext()).getHelper().getEstabelecimentoDao();
-            estabelecimentoDao.callBatchTasks(new Callable<Object>() {
-                @Override
-                public Object call() {
-                    try{
-                        Estabelecimento estabelecimento = estabelecimentoDao.queryBuilder().where().eq("id", id).queryForFirst();
+            estabelecimentoDao.callBatchTasks(() -> {
+                try{
+                    Estabelecimento estabelecimento = estabelecimentoDao.queryBuilder().where().eq("id", id).queryForFirst();
 
-                        if (estabelecimento!=null){
-                            estabelecimentoDao.delete(estabelecimento);
-                        }
-                    }catch (SQLException ex){
-                        Log.e(TAG, "ERRO = ", ex);
+                    if (estabelecimento!=null){
+                        estabelecimentoDao.delete(estabelecimento);
                     }
-                    return null;
+                }catch (SQLException ex){
+                    Log.e(TAG, "ERRO = ", ex);
                 }
+                return null;
             });
         }catch (Exception ex){
             Log.e(TAG, "ERRO = ", ex);

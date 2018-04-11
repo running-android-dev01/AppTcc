@@ -129,7 +129,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
             }
 
             edtNomeProduto.setText(produto.nome);
-            edtPrecoProduto.setText(Float.toString(produto.preco));
+            edtPrecoProduto.setText(String.format("%f", produto.preco));
             edtDescricaoProduto.setText(produto.descricao);
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);

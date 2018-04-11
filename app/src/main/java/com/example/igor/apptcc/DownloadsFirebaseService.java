@@ -1,17 +1,11 @@
 package com.example.igor.apptcc;
 
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.igor.apptcc.controller.ControllerEstabelecimento;
 import com.example.igor.apptcc.controller.ControllerEstabelecimentoAvaliacao;
@@ -22,9 +16,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DownloadsFirebaseService extends Service {
     private final String TAG =DownloadsFirebaseService.class.getName();
@@ -91,74 +82,77 @@ public class DownloadsFirebaseService extends Service {
 
     private void atualizar(final Context context, DataSnapshot dataSnapshot){
         String id = dataSnapshot.getKey();
-        if (id.equals("estabelecimento")) {
-            for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
-                ControllerEstabelecimento.atualizarEstabelecimento(context, getSnapshot);
-            }
-            ControllerEstabelecimento.setNewEstab(context.getApplicationContext());
-        }else if (id.equals("produtoAvaliacoes")){
-            for (DataSnapshot getSnapshot: dataSnapshot.getChildren()) {
-                String id_estabelecimento = getSnapshot.getKey();
-                for (DataSnapshot getProduto: getSnapshot.getChildren()) {
-                    String id_produto = getProduto.getKey();
-                    for (DataSnapshot getAvaliacao: getProduto.getChildren()) {
-                        ControllerProdutoAvaliacao.atualizarAvaliacao(context, getAvaliacao, id_estabelecimento, id_produto);
-                    }
+        switch (id) {
+            case "estabelecimento":
+                for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
+                    ControllerEstabelecimento.atualizarEstabelecimento(context, getSnapshot);
                 }
-            }
-        }else{
-            for (DataSnapshot getSnapshot: dataSnapshot.getChildren()) {
-                String id_estabelecimento = getSnapshot.getKey();
-                for (DataSnapshot getInfo: getSnapshot.getChildren()) {
-                    String key = getInfo.getKey();
-                    if (key.equals("avaliacoes")){
-                        for (DataSnapshot getAvaliacao: getInfo.getChildren()) {
-                            ControllerEstabelecimentoAvaliacao.atualizarAvaliacao(context, getAvaliacao, id_estabelecimento);
-                        }
-                    }
-                    else if (key.equals("produtos")){
-                        for (DataSnapshot getProduto: getInfo.getChildren()) {
-                            ControllerProduto.atualizarProduto(context, getProduto, id_estabelecimento);
+                ControllerEstabelecimento.setNewEstab(context.getApplicationContext());
+                break;
+            case "produtoAvaliacoes":
+                for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
+                    String id_estabelecimento = getSnapshot.getKey();
+                    for (DataSnapshot getProduto : getSnapshot.getChildren()) {
+                        String id_produto = getProduto.getKey();
+                        for (DataSnapshot getAvaliacao : getProduto.getChildren()) {
+                            ControllerProdutoAvaliacao.atualizarAvaliacao(context, getAvaliacao, id_estabelecimento, id_produto);
                         }
                     }
                 }
-            }
+                break;
+            default:
+                for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
+                    String id_estabelecimento = getSnapshot.getKey();
+                    for (DataSnapshot getInfo : getSnapshot.getChildren()) {
+                        String key = getInfo.getKey();
+                        if (key.equals("avaliacoes")) {
+                            for (DataSnapshot getAvaliacao : getInfo.getChildren()) {
+                                ControllerEstabelecimentoAvaliacao.atualizarAvaliacao(context, getAvaliacao, id_estabelecimento);
+                            }
+                        } else if (key.equals("produtos")) {
+                            for (DataSnapshot getProduto : getInfo.getChildren()) {
+                                ControllerProduto.atualizarProduto(context, getProduto, id_estabelecimento);
+                            }
+                        }
+                    }
+                }
+                break;
         }
     }
 
     private void excluir(final Context context, DataSnapshot dataSnapshot){
         String id = dataSnapshot.getKey();
-        if (id.equals("estabelecimento")) {
-            for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
-                ControllerEstabelecimento.excluirEstabelecimento(context, getSnapshot);
-            }
-        }else if (id.equals("produtoAvaliacoes")){
-            for (DataSnapshot getSnapshot: dataSnapshot.getChildren()) {
-                String id_estabelecimento = getSnapshot.getKey();
-                for (DataSnapshot getProduto: getSnapshot.getChildren()) {
-                    String id_produto = getProduto.getKey();
-                    for (DataSnapshot getAvaliacao: getProduto.getChildren()) {
-                        ControllerProdutoAvaliacao.excluirAvaliacao(context, getAvaliacao);
-                    }
+        switch (id) {
+            case "estabelecimento":
+                for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
+                    ControllerEstabelecimento.excluirEstabelecimento(context, getSnapshot);
                 }
-            }
-        }else{
-            for (DataSnapshot getSnapshot: dataSnapshot.getChildren()) {
-                String id_estabelecimento = getSnapshot.getKey();
-                for (DataSnapshot getInfo: getSnapshot.getChildren()) {
-                    String key = getInfo.getKey();
-                    if (key.equals("avaliacoes")){
-                        for (DataSnapshot getAvaliacao: getInfo.getChildren()) {
-                            ControllerEstabelecimentoAvaliacao.excluirAvaliacao(context, getAvaliacao);
-                        }
-                    }
-                    else if (key.equals("produtos")){
-                        for (DataSnapshot getProduto: getInfo.getChildren()) {
-                            ControllerProduto.excluirProduto(context, getProduto);
+                break;
+            case "produtoAvaliacoes":
+                for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot getProduto : getSnapshot.getChildren()) {
+                        for (DataSnapshot getAvaliacao : getProduto.getChildren()) {
+                            ControllerProdutoAvaliacao.excluirAvaliacao(context, getAvaliacao);
                         }
                     }
                 }
-            }
+                break;
+            default:
+                for (DataSnapshot getSnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot getInfo : getSnapshot.getChildren()) {
+                        String key = getInfo.getKey();
+                        if (key.equals("avaliacoes")) {
+                            for (DataSnapshot getAvaliacao : getInfo.getChildren()) {
+                                ControllerEstabelecimentoAvaliacao.excluirAvaliacao(context, getAvaliacao);
+                            }
+                        } else if (key.equals("produtos")) {
+                            for (DataSnapshot getProduto : getInfo.getChildren()) {
+                                ControllerProduto.excluirProduto(context, getProduto);
+                            }
+                        }
+                    }
+                }
+                break;
         }
 
     }

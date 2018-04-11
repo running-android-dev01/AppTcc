@@ -3,23 +3,19 @@ package com.example.igor.apptcc.pesquisar;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.igor.apptcc.R;
+import com.example.igor.apptcc.estabelecimento.InfoEstabelecimentoActivity;
 import com.example.igor.apptcc.model.PesquisaModel;
-import com.example.igor.apptcc.model.Produto;
-import com.example.igor.apptcc.produto.InfoProdutoActivity;
-import com.example.igor.apptcc.produto.ViewHolderProduto;
 import com.example.igor.apptcc.utils.AndroidUtils;
 
 import java.util.List;
 
-public class AdapterPesquisa  extends RecyclerView.Adapter<ViewHolderPesquisa> {
+class AdapterPesquisa  extends RecyclerView.Adapter<ViewHolderPesquisa> {
     private List<PesquisaModel> mPesquisaModel;
-    private final Context context;
+    private Context context;
 
 
     public AdapterPesquisa(Context context){
@@ -44,6 +40,13 @@ public class AdapterPesquisa  extends RecyclerView.Adapter<ViewHolderPesquisa> {
         holder.txtProdutoEstabelecimento.setText(pesquisaModel.estabelecimento_nome);
         holder.txtEndereco.setText(pesquisaModel.estabelecimento_endereco);
         holder.txtDistancia.setText(AndroidUtils.formatDistanciaFormat(pesquisaModel.distancia));
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent i = new Intent(context, InfoEstabelecimentoActivity.class);
+            i.putExtra(InfoEstabelecimentoActivity.PARAM_ID, pesquisaModel.estabelecimento_key);
+
+            context.startActivity(i);
+        });
 
     }
 

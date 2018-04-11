@@ -87,7 +87,7 @@ public class EditarEstabelecimentoAvaliacaoActivity extends AppCompatActivity {
             FirebaseUser currentUser = mAuth.getCurrentUser();
 
             estabelecimentoAvaliacao.nome = mAuth.getCurrentUser().getDisplayName();
-            estabelecimentoAvaliacao.uid = mAuth.getUid();
+            estabelecimentoAvaliacao.uid = currentUser.getUid();
             estabelecimentoAvaliacao.data = DateUtils.ConvertToStringFormat(new java.util.Date());
             estabelecimentoAvaliacao.avaliacao = (long) erAvaliacao.getRating();
             estabelecimentoAvaliacao.descricao = edtDescricaoProduto.getText().toString();

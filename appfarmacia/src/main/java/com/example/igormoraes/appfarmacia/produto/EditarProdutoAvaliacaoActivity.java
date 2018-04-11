@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.igormoraes.appfarmacia.AppTccAplication;
 import com.example.igormoraes.appfarmacia.R;
 import com.example.igormoraes.appfarmacia.controller.ControllerProduto;
+import com.example.igormoraes.appfarmacia.controller.ControllerProdutoAvaliacao;
 import com.example.igormoraes.appfarmacia.model.Estabelecimento;
 import com.example.igormoraes.appfarmacia.model.Produto;
 import com.example.igormoraes.appfarmacia.model.ProdutoAvaliacao;
@@ -92,12 +93,12 @@ public class EditarProdutoAvaliacaoActivity extends AppCompatActivity {
             FirebaseUser currentUser = mAuth.getCurrentUser();
 
             produtoAvaliacao.nome = mAuth.getCurrentUser().getDisplayName();
-            produtoAvaliacao.uid = mAuth.getUid();
+            produtoAvaliacao.uid = currentUser.getUid();
             produtoAvaliacao.data = DateUtils.ConvertToStringFormat(new java.util.Date());
             produtoAvaliacao.avaliacao = (long) erAvaliacao.getRating();
             produtoAvaliacao.descricao = edtDescricaoProduto.getText().toString();
 
-            ControllerProduto.incluirAvaliacao(id_estabelecimento, id_produto, produtoAvaliacao);
+            ControllerProdutoAvaliacao.incluir(id_estabelecimento, id_produto, produtoAvaliacao);
 
 
             long total = lProdutoAvaliacao.size() + 1;

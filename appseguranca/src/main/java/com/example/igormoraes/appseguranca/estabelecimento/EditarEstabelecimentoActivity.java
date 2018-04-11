@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.example.igormoraes.appseguranca.AppTccAplication;
 import com.example.igormoraes.appseguranca.R;
 import com.example.igormoraes.appseguranca.controller.ControllerEstabelecimento;
-import com.example.igormoraes.appseguranca.model.Estabelecimento;
+import com.example.igormoraes.appseguranca.model.Ocorrencia;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -35,10 +35,9 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
     private double longitude;
 
     private EditText edtNome;
-    private LinearLayout lnlEnderecoAlterEstabelecimento;
     private TextView txtEnderecoAlterEstabelecimento;
 
-    private Estabelecimento estabelecimento;
+    private Ocorrencia estabelecimento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
         longitude = getIntent().getExtras().getDouble(PARAM_LONGITUDE, 0.0);
 
         edtNome = findViewById(R.id.edtNome);
-        lnlEnderecoAlterEstabelecimento = findViewById(R.id.lnlEnderecoAlterEstabelecimento);
+        LinearLayout lnlEnderecoAlterEstabelecimento = findViewById(R.id.lnlEnderecoAlterEstabelecimento);
         txtEnderecoAlterEstabelecimento = findViewById(R.id.txtEnderecoAlterEstabelecimento);
         Button btn_salvar = findViewById(R.id.btn_salvar);
 
@@ -85,7 +84,7 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
             edtNome.setError(null);
 
             if (TextUtils.isEmpty(edtNome.getText().toString())){
-                edtNome.setError("Informe o nome");
+                edtNome.setError(getString(R.string.informe_nome_estabelecimento));
                 return;
             }
 
@@ -95,9 +94,8 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
                 return;
             }
 
-            estabelecimento.nome = edtNome.getText().toString().toUpperCase();
+            estabelecimento.ocorrencia = edtNome.getText().toString().toUpperCase();
             estabelecimento.endereco = txtEnderecoAlterEstabelecimento.getText().toString().toUpperCase();
-            estabelecimento.referencia = "";
             estabelecimento.longitude = longitude;
             estabelecimento.latitude = latitude;
 
@@ -124,15 +122,14 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
 
     private void carregarDados(){
         try{
-            Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)getApplicationContext()).getHelper().getEstabelecimentoDao();
+            Dao<Ocorrencia, Integer> estabelecimentoDao = ((AppTccAplication)getApplicationContext()).getHelper().getEstabelecimentoDao();
             estabelecimento = estabelecimentoDao.queryBuilder().where().eq("id", id_estabelecimento).queryForFirst();
             if (estabelecimento==null){
-                estabelecimento = new Estabelecimento();
-                estabelecimento.nome = "";
+                estabelecimento = new Ocorrencia();
+                estabelecimento.ocorrencia = "";
                 estabelecimento.endereco = "";
-                estabelecimento.avaliacao = 0;
             }
-            edtNome.setText(estabelecimento.nome);
+            edtNome.setText(estabelecimento.ocorrencia);
             txtEnderecoAlterEstabelecimento.setText(estabelecimento.endereco);
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);

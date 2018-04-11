@@ -12,10 +12,10 @@
 
     <application
         android:name=".AppTccAplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_estabelecimento"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_estabelecimento_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
@@ -80,6 +80,19 @@
         <activity
             android:name=".pesquisar.PesquisarActivity"
             android:label="@string/title_activity_pesquisar" />
+
+        <service
+            android:name=".DownloadsFirebaseService"
+            android:exported="true" />
+
+        <receiver
+            android:name=".DownloadsFirebaseBreadCast"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.igormoraes.appseguranca.DownloadsFirebase"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -1,5 +1,8 @@
 package com.example.igormoraes.appbar.utils;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 public class AndroidUtils {
 
     public static double calculaDistancia(double lat1, double lng1, double lat2, double lng2) {
@@ -25,4 +28,24 @@ public class AndroidUtils {
         return String.format("%4.3f%s", distance, unit);
     }
 
+    public static float convertStringToFloat(String str){
+        Float valor = Float.valueOf(0);
+        try
+        {
+            valor = Float.valueOf(str);
+        }
+        catch(NumberFormatException ex)
+        {
+            DecimalFormat df = new DecimalFormat();
+            Number n = null;
+            try
+            {
+                n = df.parse(str);
+            }
+            catch(ParseException ex2){ }
+            if(n != null)
+                valor = n.floatValue();
+        }
+        return valor;
+    }
 }

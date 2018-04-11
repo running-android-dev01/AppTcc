@@ -12,12 +12,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.igormoraes.appfarmacia.AppTccAplication;
 import com.example.igormoraes.appfarmacia.R;
-import com.example.igormoraes.appfarmacia.controller.ControllerProduto;
 import com.example.igormoraes.appfarmacia.estabelecimento.InfoEstabelecimentoActivity;
 import com.example.igormoraes.appfarmacia.model.Produto;
 import com.example.igormoraes.appfarmacia.model.ProdutoAvaliacao;
@@ -35,14 +33,11 @@ public class InfoProdutoActivity extends AppCompatActivity {
 
     private String id_produto;
     private String id_estabelecimento;
-    private Produto produto;
 
-    private ImageView imgPodutoFoto;
     private TextView txtNomeProduto;
     private TextView txtPrecoProduto;
     private TextView txtDescricaoProduto;
     private TextView txtAvaliacaoProduto;
-    private ImageButton imbEditar;
 
     private RecyclerView rcwAvaliacoes;
     private TextView txtEmptyAvaliacoes;
@@ -65,12 +60,11 @@ public class InfoProdutoActivity extends AppCompatActivity {
         id_estabelecimento = getIntent().getExtras().getString(PARAM_ID_ESTABELECIMENTO, "");
 
 
-        imgPodutoFoto = findViewById(R.id.imgPodutoFoto);
         txtAvaliacaoProduto = findViewById(R.id.txtAvaliacaoProduto);
         txtNomeProduto = findViewById(R.id.txtNomeProduto);
         txtPrecoProduto = findViewById(R.id.txtPrecoProduto);
         txtDescricaoProduto = findViewById(R.id.txtDescricaoProduto);
-        imbEditar = findViewById(R.id.imbEditar);
+        ImageButton imbEditar = findViewById(R.id.imbEditar);
 
         rcwAvaliacoes = findViewById(R.id.rcwAvaliacoes);
         txtEmptyAvaliacoes = findViewById(R.id.txtEmptyAvaliacoes);
@@ -79,9 +73,6 @@ public class InfoProdutoActivity extends AppCompatActivity {
         fab.setOnClickListener(clickAvaliacao);
 
         imbEditar.setOnClickListener(clickEditar);
-
-        ControllerProduto controllerProduto = new ControllerProduto();
-        controllerProduto.atualizarAvaliacoes(this, id_estabelecimento, id_produto);
 
         setupRecycler();
     }
@@ -143,12 +134,12 @@ public class InfoProdutoActivity extends AppCompatActivity {
             Dao<Produto, Integer> produtoDao = ((AppTccAplication)getApplicationContext()).getHelper().getProdutoDao();
             Dao<ProdutoAvaliacao, Integer> produtoAvaliacaoDao = ((AppTccAplication)getApplicationContext()).getHelper().getProdutoAvaliacaoDao();
 
-            produto = produtoDao.queryBuilder().where().eq("id", id_produto).and().eq("id_estabelecimento", id_estabelecimento).queryForFirst();
+            Produto produto = produtoDao.queryBuilder().where().eq("id", id_produto).and().eq("id_estabelecimento", id_estabelecimento).queryForFirst();
 
             txtNomeProduto.setText(produto.nome.toUpperCase());
             txtDescricaoProduto.setText(produto.descricao);
-            txtAvaliacaoProduto.setText(Long.toString(produto.avaliacao));
-            txtPrecoProduto.setText(String.format("R$ %s", Float.toString(produto.preco)));
+            txtAvaliacaoProduto.setText(String.format("%d", produto.avaliacao));
+            txtPrecoProduto.setText(String.format("R$ %.2f", produto.preco));
 
             List<ProdutoAvaliacao> lProdutoAvaliacao = produtoAvaliacaoDao.queryBuilder().orderBy("data", false).where().eq("id_produto", id_produto).query();
             if (lProdutoAvaliacao.size()==0){

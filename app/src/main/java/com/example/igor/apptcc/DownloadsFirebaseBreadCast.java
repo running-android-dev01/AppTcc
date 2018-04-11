@@ -9,7 +9,7 @@ public class DownloadsFirebaseBreadCast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startService(new Intent(context, DownloadsFirebaseService.class));;
+        context.startService(new Intent(context, DownloadsFirebaseService.class));
 
     }
 }

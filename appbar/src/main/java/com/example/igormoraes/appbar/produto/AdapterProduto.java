@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.igormoraes.appbar.R;
@@ -37,17 +36,14 @@ public class AdapterProduto  extends RecyclerView.Adapter<ViewHolderProduto> {
     public void onBindViewHolder(ViewHolderProduto holder, int position) {
         final Produto produto = mProduto.get(position);
         holder.txtNomeProduto.setText(produto.nome);
-        holder.txtPrecoProduto.setText(String.format("R$ %s", Float.toString(produto.preco)));
+        holder.txtPrecoProduto.setText(String.format("R$ %.2f", produto.preco));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, InfoProdutoActivity.class);
-                i.putExtra(InfoProdutoActivity.PARAM_ID, produto.id);
-                i.putExtra(InfoProdutoActivity.PARAM_ID_ESTABELECIMENTO, produto.id_estabelecimento);
+        holder.itemView.setOnClickListener(v -> {
+            Intent i = new Intent(context, InfoProdutoActivity.class);
+            i.putExtra(InfoProdutoActivity.PARAM_ID, produto.id);
+            i.putExtra(InfoProdutoActivity.PARAM_ID_ESTABELECIMENTO, produto.id_estabelecimento);
 
-                context.startActivity(i);
-            }
+            context.startActivity(i);
         });
     }
 

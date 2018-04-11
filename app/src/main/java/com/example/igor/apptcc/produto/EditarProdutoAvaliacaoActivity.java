@@ -93,7 +93,7 @@ public class EditarProdutoAvaliacaoActivity extends AppCompatActivity {
             FirebaseUser currentUser = mAuth.getCurrentUser();
 
             produtoAvaliacao.nome = mAuth.getCurrentUser().getDisplayName();
-            produtoAvaliacao.uid = mAuth.getUid();
+            produtoAvaliacao.uid = currentUser.getUid();
             produtoAvaliacao.data = DateUtils.ConvertToStringFormat(new java.util.Date());
             produtoAvaliacao.avaliacao = (long) erAvaliacao.getRating();
             produtoAvaliacao.descricao = edtDescricaoProduto.getText().toString();

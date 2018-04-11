@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
             android:background="@color/primaryDarkColor"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -26,8 +27,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imgEstabelecimentoFoto"
-                    android:src="@mipmap/ic_estab_round"
+                    android:src="@mipmap/ic_estabelecimento_round"
                     android:layout_width="wrap_content"
                     android:layout_height="72dp"
                     android:layout_gravity="center_vertical"
@@ -52,7 +52,7 @@
                     android:textColor="@color/primaryTextColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Avaliação"
+                    android:text="@string/avaliacao"
                     android:layout_gravity="center"
                     />
             </LinearLayout>
@@ -105,63 +105,6 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtProdutoAvaliacao"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Produtos"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/primaryDarkColor" />
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcwProdutos"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/content_info_estabelecimento_produto"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
-
-        <TextView android:id="@+id/txtEmptyProdutos"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nenhum produto cadastrado"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            />
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcwAvaliacao"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/content_info_estabelecimento_produto"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
-
-
-        <TextView android:id="@+id/txtEmptyAvaliacao"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nenhuma avaliacao"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            />
-
-
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

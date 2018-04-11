@@ -26,13 +26,10 @@ import com.j256.ormlite.dao.Dao;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PesquisarActivity extends AppCompatActivity {
     private static final String TAG = PesquisarActivity.class.getName();
-
-    private boolean estabelecimento = true;
 
     private double latitude;
     private double longitude;
@@ -58,7 +55,6 @@ public class PesquisarActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_estabelecimento:
                     txtEmpty.setVisibility(View.GONE);
-                    estabelecimento = true;
                     edtPesquisar.setText("");
                     btn_pesquisar.setOnClickListener(clickEstabelecimento);
                     lPesquisaModel.clear();
@@ -66,7 +62,6 @@ public class PesquisarActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_produto:
                     txtEmpty.setVisibility(View.GONE);
-                    estabelecimento = false;
                     edtPesquisar.setText("");
                     btn_pesquisar.setOnClickListener(clickProduto);
                     lPesquisaModel.clear();
@@ -102,7 +97,7 @@ public class PesquisarActivity extends AppCompatActivity {
 
         txtEmpty.setVisibility(View.GONE);
 
-        btn_pesquisar.setOnClickListener(clickEstabelecimento);
+        btn_pesquisar.setOnClickListener(clickProduto);
 
         setupRecycler();
     }
@@ -134,7 +129,7 @@ public class PesquisarActivity extends AppCompatActivity {
                     pesquisa.produto_key = p.id;
                     pesquisa.produto_nome = p.nome;
                     pesquisa.estabelecimento_key = p.id_estabelecimento;
-                    pesquisa.estabelecimento_nome = p.estabelecimento_nome;
+                    pesquisa.estabelecimento_nome = String.format("%s (R$ %.2f)", p.estabelecimento_nome, p.preco);
                     pesquisa.estabelecimento_endereco = p.estabelecimento_endereco;
                     pesquisa.estabelecimento_referencia = p.estabelecimento_referencia;
 
@@ -144,13 +139,10 @@ public class PesquisarActivity extends AppCompatActivity {
                     lPesquisaModel.add(pesquisa);
                 }
 
-                Collections.sort(lPesquisaModel, new Comparator<PesquisaModel>() {
-                    @Override
-                    public int compare(PesquisaModel o1, PesquisaModel o2) {
-                        Double d1 = o1.distancia;
-                        Double d2 = o2.distancia;
-                        return d1.compareTo(d2);
-                    }
+                Collections.sort(lPesquisaModel, (o1, o2) -> {
+                    Double d1 = o1.distancia;
+                    Double d2 = o2.distancia;
+                    return d1.compareTo(d2);
                 });
 
                 txtEmpty.setVisibility(lPesquisaModel.size()==0?View.VISIBLE:View.GONE);
@@ -188,13 +180,10 @@ public class PesquisarActivity extends AppCompatActivity {
                     lPesquisaModel.add(pesquisa);
                 }
 
-                Collections.sort(lPesquisaModel, new Comparator<PesquisaModel>() {
-                    @Override
-                    public int compare(PesquisaModel o1, PesquisaModel o2) {
-                        Double d1 = o1.distancia;
-                        Double d2 = o2.distancia;
-                        return d1.compareTo(d2);
-                    }
+                Collections.sort(lPesquisaModel, (o1, o2) -> {
+                    Double d1 = o1.distancia;
+                    Double d2 = o2.distancia;
+                    return d1.compareTo(d2);
                 });
 
                 txtEmpty.setVisibility(lPesquisaModel.size()==0?View.VISIBLE:View.GONE);

@@ -15,9 +15,12 @@ import com.example.igormoraes.appfarmacia.R;
 import com.example.igormoraes.appfarmacia.controller.ControllerProduto;
 import com.example.igormoraes.appfarmacia.model.Estabelecimento;
 import com.example.igormoraes.appfarmacia.model.Produto;
+import com.example.igormoraes.appfarmacia.utils.AndroidUtils;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 
 public class EditarProdutoActivity extends AppCompatActivity {
     private static final String TAG = EditarProdutoActivity.class.getName();
@@ -84,19 +87,19 @@ public class EditarProdutoActivity extends AppCompatActivity {
             edtPrecoProduto.setError(null);
 
             if (TextUtils.isEmpty(edtNomeProduto.getText().toString())){
-                edtNomeProduto.setError("Informe o nome do produto");
+                edtNomeProduto.setError(getString(R.string.informe_nome_produto));
                 return;
             }
 
 
             if (TextUtils.isEmpty(edtPrecoProduto.getText().toString())){
-                edtPrecoProduto.setError("Informe o preço do produto");
+                edtPrecoProduto.setError(getString(R.string.informe_preco_produto));
                 return;
             }
 
 
             produto.nome = edtNomeProduto.getText().toString();
-            produto.preco = Float.parseFloat(edtPrecoProduto.getText().toString());
+            produto.preco = AndroidUtils.convertStringToFloat(edtPrecoProduto.getText().toString());
             produto.descricao= edtDescricaoProduto.getText().toString();
 
 
@@ -129,7 +132,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
             }
 
             edtNomeProduto.setText(produto.nome);
-            edtPrecoProduto.setText(Float.toString(produto.preco));
+            edtPrecoProduto.setText(String.format("%.2f", produto.preco));
             edtDescricaoProduto.setText(produto.descricao);
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);

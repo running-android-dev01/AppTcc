@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.igormoraes.appbar.R;
 import com.example.igormoraes.appbar.utils.FetchLocationIntentUtils;
 
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;

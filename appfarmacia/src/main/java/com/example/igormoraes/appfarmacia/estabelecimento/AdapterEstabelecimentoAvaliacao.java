@@ -12,7 +12,7 @@ import com.example.igormoraes.appfarmacia.utils.DateUtils;
 import java.util.List;
 
 
-public class AdapterEstabelecimentoAvaliacao  extends RecyclerView.Adapter<ViewHolderEstabelecimentoAvaliacao> {
+class AdapterEstabelecimentoAvaliacao  extends RecyclerView.Adapter<ViewHolderEstabelecimentoAvaliacao> {
     private List<EstabelecimentoAvaliacao> mEstabelecimentoAvaliacao;
     private final Context context;
 
@@ -38,8 +38,8 @@ public class AdapterEstabelecimentoAvaliacao  extends RecyclerView.Adapter<ViewH
 
 
         holder.txtNomeEstabelecimentoAvaliacao.setText(estabelecimentoAvaliacao.nome);
-        holder.txtDataEstabelecimentoAvaliacao.setText(DateUtils.ConvertToString(estabelecimentoAvaliacao.data));
-        holder.txtNotaEstabelecimentoAvaliacao.setText(Long.toString(estabelecimentoAvaliacao.avaliacao));
+        holder.txtDataEstabelecimentoAvaliacao.setText(DateUtils.ConvertToString(estabelecimentoAvaliacao.data, context));
+        holder.txtNotaEstabelecimentoAvaliacao.setText(String.format("%d", estabelecimentoAvaliacao.avaliacao));
         holder.txtDescricaoEstabelecimentoAvaliacao.setText(estabelecimentoAvaliacao.descricao);
     }
 

@@ -1,16 +1,21 @@
 package com.example.igormoraes.appseguranca.utils;
 
+import android.content.Context;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by igormoraes on 17/03/18.
  */
 
 public class DateUtils {
-    private static Date ConvertToDate(String dateString){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+    private static Date ConvertToDate(String dateString, Context context){
+        Locale current = context.getApplicationContext().getResources().getConfiguration().locale;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss", current);
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(dateString);
@@ -25,8 +30,8 @@ public class DateUtils {
     }
 
 
-    public static String ConvertToString(String date){
-        return android.text.format.DateFormat.format("dd/MM/yyyy", ConvertToDate(date)).toString();
+    public static String ConvertToString(String date, Context context){
+        return android.text.format.DateFormat.format("dd/MM/yyyy", ConvertToDate(date, context)).toString();
     }
 
 }

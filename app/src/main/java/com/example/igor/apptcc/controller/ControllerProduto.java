@@ -6,17 +6,13 @@ import android.util.Log;
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.Produto;
-import com.example.igor.apptcc.model.ProdutoAvaliacao;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 public class ControllerProduto {
     public static void atualizarProduto(final Context context, final DataSnapshot dataSnapshot, final String id_estabelecimento){
@@ -24,50 +20,47 @@ public class ControllerProduto {
         final HashMap hashMap = (HashMap)dataSnapshot.getValue();
         try{
             Dao<Produto, Integer> produtoDao = ((AppTccAplication)context.getApplicationContext()).getHelper().getProdutoDao();
-            produtoDao.callBatchTasks(new Callable<Object>() {
-                @Override
-                public Object call() {
-                    try{
-                        Produto produto = produtoDao.queryBuilder().where().eq("id", id).queryForFirst();
+            produtoDao.callBatchTasks(() -> {
+                try{
+                    Produto produto = produtoDao.queryBuilder().where().eq("id", id).queryForFirst();
 
-                        if (produto==null){
-                            produto = new Produto();
-                            produto.id = id;
-                            produto.id_estabelecimento = id_estabelecimento;
-                        }
-
-                        float preco = 0.0f;
-                        Object oPreco = hashMap.get("preco");
-                        if (oPreco!=null){
-                            if (oPreco instanceof Long){
-                                long lPreco = (long)oPreco;
-                                preco = (float) lPreco;
-                            }else if (oPreco instanceof Double){
-                                double dPreco = (double)oPreco;
-                                preco = (float) dPreco;
-                            }else if (oPreco instanceof String){
-                                String sPreco = (String)oPreco;
-                                preco = Float.parseFloat(sPreco);
-                            }
-
-                        }
-                        produto.nome = (String)hashMap.get("nome");
-                        produto.preco = preco;
-                        produto.descricao = (String)hashMap.get("descricao");
-                        produto.avaliacao = (long)hashMap.get("avaliacao");
-
-                        produto.estabelecimento_nome = (String)hashMap.get("estabelecimento_nome");
-                        produto.estabelecimento_endereco = (String)hashMap.get("estabelecimento_endereco");
-                        produto.estabelecimento_referencia = (String)hashMap.get("estabelecimento_referencia");
-                        produto.estabelecimento_latitude = (Double)hashMap.get("estabelecimento_latitude");
-                        produto.estabelecimento_longitude = (Double)hashMap.get("estabelecimento_longitude");
-
-                        produtoDao.createOrUpdate(produto);
-                    }catch (SQLException ex){
-                        Log.e(TAG, "ERRO = ", ex);
+                    if (produto==null){
+                        produto = new Produto();
+                        produto.id = id;
+                        produto.id_estabelecimento = id_estabelecimento;
                     }
-                    return null;
+
+                    float preco = 0.0f;
+                    Object oPreco = hashMap.get("preco");
+                    if (oPreco!=null){
+                        if (oPreco instanceof Long){
+                            long lPreco = (long)oPreco;
+                            preco = (float) lPreco;
+                        }else if (oPreco instanceof Double){
+                            double dPreco = (double)oPreco;
+                            preco = (float) dPreco;
+                        }else if (oPreco instanceof String){
+                            String sPreco = (String)oPreco;
+                            preco = Float.parseFloat(sPreco);
+                        }
+
+                    }
+                    produto.nome = (String)hashMap.get("nome");
+                    produto.preco = preco;
+                    produto.descricao = (String)hashMap.get("descricao");
+                    produto.avaliacao = (long)hashMap.get("avaliacao");
+
+                    produto.estabelecimento_nome = (String)hashMap.get("estabelecimento_nome");
+                    produto.estabelecimento_endereco = (String)hashMap.get("estabelecimento_endereco");
+                    produto.estabelecimento_referencia = (String)hashMap.get("estabelecimento_referencia");
+                    produto.estabelecimento_latitude = (Double)hashMap.get("estabelecimento_latitude");
+                    produto.estabelecimento_longitude = (Double)hashMap.get("estabelecimento_longitude");
+
+                    produtoDao.createOrUpdate(produto);
+                }catch (SQLException ex){
+                    Log.e(TAG, "ERRO = ", ex);
                 }
+                return null;
             });
         }catch (Exception ex){
             Log.e(TAG, "ERRO = ", ex);
@@ -78,20 +71,17 @@ public class ControllerProduto {
         final String id = dataSnapshot.getKey();
         try{
             Dao<Produto, Integer> produtoDao = ((AppTccAplication)context.getApplicationContext()).getHelper().getProdutoDao();
-            produtoDao.callBatchTasks(new Callable<Object>() {
-                @Override
-                public Object call() {
-                    try{
-                        Produto produto = produtoDao.queryBuilder().where().eq("id", id).queryForFirst();
+            produtoDao.callBatchTasks(() -> {
+                try{
+                    Produto produto = produtoDao.queryBuilder().where().eq("id", id).queryForFirst();
 
-                        if (produto!=null){
-                            produtoDao.delete(produto);
-                        }
-                    }catch (SQLException ex){
-                        Log.e(TAG, "ERRO = ", ex);
+                    if (produto!=null){
+                        produtoDao.delete(produto);
                     }
-                    return null;
+                }catch (SQLException ex){
+                    Log.e(TAG, "ERRO = ", ex);
                 }
+                return null;
             });
         }catch (Exception ex){
             Log.e(TAG, "ERRO = ", ex);

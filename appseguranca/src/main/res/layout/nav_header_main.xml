@@ -13,7 +13,6 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imgFotoUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@mipmap/ic_user_round" />
@@ -23,21 +22,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="IGOR MORAES"
+        android:text=""
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/txtEmailUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="IGOR@RUNNING.COM.BR"
+        android:text=""
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
     <TextView
         android:id="@+id/txtVersaoUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1.01.0001"
+        android:text=""
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:layout_gravity="end"/>
 </LinearLayout>

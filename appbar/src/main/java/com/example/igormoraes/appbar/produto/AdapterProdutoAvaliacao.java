@@ -15,7 +15,7 @@ import java.util.List;
  * Created by igormoraes on 17/03/18.
  */
 
-public class AdapterProdutoAvaliacao  extends RecyclerView.Adapter<ViewHolderProdutoAvaliacao> {
+class AdapterProdutoAvaliacao  extends RecyclerView.Adapter<ViewHolderProdutoAvaliacao> {
     private List<ProdutoAvaliacao> mProdutoAvaliacao;
     private final Context context;
 
@@ -41,8 +41,8 @@ public class AdapterProdutoAvaliacao  extends RecyclerView.Adapter<ViewHolderPro
 
 
         holder.txtNomeProdutoAvaliacao.setText(produtoAvaliacao.nome);
-        holder.txtDataProdutoAvaliacao.setText(DateUtils.ConvertToString(produtoAvaliacao.data));
-        holder.txtNotaProdutoAvaliacao.setText(Long.toString(produtoAvaliacao.avaliacao));
+        holder.txtDataProdutoAvaliacao.setText(DateUtils.ConvertToString(produtoAvaliacao.data, context));
+        holder.txtNotaProdutoAvaliacao.setText(String.format("%d", produtoAvaliacao.avaliacao));
         holder.txtDescricaoProdutoAvaliacao.setText(produtoAvaliacao.descricao);
     }
 

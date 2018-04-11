@@ -3,10 +3,6 @@
     <color name="primaryColor">#1060ff</color>
     <color name="primaryLightColor">#6e8dff</color>
     <color name="primaryDarkColor">#0037cb</color>
-    <color name="secondaryColor">#1060ff</color>
-    <color name="secondaryLightColor">#6e8dff</color>
-    <color name="secondaryDarkColor">#0037cb</color>
     <color name="primaryTextColor">#ffffff</color>
-    <color name="secondaryTextColor">#ffffff</color>
 
 </resources>

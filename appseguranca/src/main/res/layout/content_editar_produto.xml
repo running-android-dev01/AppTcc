@@ -16,10 +16,12 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:src="@drawable/ic_produto"
+            android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="14dp"
             android:layout_gravity="center_horizontal" />
 
 
@@ -33,7 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Nome Produto"/>
+                android:hint="@string/nome_produto"
+                tools:ignore="Autofill"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -46,7 +49,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:hint="Preço Produto"/>
+                android:hint="@string/preco_produto"
+                tools:ignore="Autofill"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -58,7 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
-                android:hint="Descricao Produto"/>
+                android:hint="@string/descricao_produto"
+                tools:ignore="Autofill"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -69,7 +74,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Atualizar"/>
+            android:text="@string/atualizar"/>
 
 
     </LinearLayout>

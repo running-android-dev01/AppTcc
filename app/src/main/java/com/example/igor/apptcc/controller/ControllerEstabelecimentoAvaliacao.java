@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.igor.apptcc.AppTccAplication;
-import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.EstabelecimentoAvaliacao;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -13,7 +12,6 @@ import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 public class ControllerEstabelecimentoAvaliacao {
     private static final String TAG = ControllerEstabelecimentoAvaliacao.class.getName();
@@ -24,32 +22,29 @@ public class ControllerEstabelecimentoAvaliacao {
 
         try{
             Dao<EstabelecimentoAvaliacao, Integer> estabelecimentoAvaliacaoDao = ((AppTccAplication)context.getApplicationContext()).getHelper().getEstabelecimentoAvaliacaoDao();
-            estabelecimentoAvaliacaoDao.callBatchTasks(new Callable<Object>() {
-                @Override
-                public Object call() {
-                    try{
+            estabelecimentoAvaliacaoDao.callBatchTasks(() -> {
+                try{
 
-                        EstabelecimentoAvaliacao estabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().where().eq("id", id).queryForFirst();
+                    EstabelecimentoAvaliacao estabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().where().eq("id", id).queryForFirst();
 
-                        if (estabelecimentoAvaliacao==null){
-                            estabelecimentoAvaliacao = new EstabelecimentoAvaliacao();
-                            estabelecimentoAvaliacao.id = id;
-                            estabelecimentoAvaliacao.id_estabelecimento = id_estabelecimento;
-                        }
-
-
-                        estabelecimentoAvaliacao.nome = (String)hashMap.get("nome");
-                        estabelecimentoAvaliacao.uid = (String)hashMap.get("uid");
-                        estabelecimentoAvaliacao.data = (String)hashMap.get("data");
-                        estabelecimentoAvaliacao.avaliacao = (long)hashMap.get("avaliacao");
-                        estabelecimentoAvaliacao.descricao = (String)hashMap.get("descricao");
-
-                        estabelecimentoAvaliacaoDao.createOrUpdate(estabelecimentoAvaliacao);
-                    }catch (SQLException ex){
-                        Log.e(TAG, "ERRO = ", ex);
+                    if (estabelecimentoAvaliacao==null){
+                        estabelecimentoAvaliacao = new EstabelecimentoAvaliacao();
+                        estabelecimentoAvaliacao.id = id;
+                        estabelecimentoAvaliacao.id_estabelecimento = id_estabelecimento;
                     }
-                    return null;
+
+
+                    estabelecimentoAvaliacao.nome = (String)hashMap.get("nome");
+                    estabelecimentoAvaliacao.uid = (String)hashMap.get("uid");
+                    estabelecimentoAvaliacao.data = (String)hashMap.get("data");
+                    estabelecimentoAvaliacao.avaliacao = (long)hashMap.get("avaliacao");
+                    estabelecimentoAvaliacao.descricao = (String)hashMap.get("descricao");
+
+                    estabelecimentoAvaliacaoDao.createOrUpdate(estabelecimentoAvaliacao);
+                }catch (SQLException ex){
+                    Log.e(TAG, "ERRO = ", ex);
                 }
+                return null;
             });
         }catch (Exception ex){
             Log.e(TAG, "ERRO = ", ex);
@@ -60,20 +55,17 @@ public class ControllerEstabelecimentoAvaliacao {
         final String id = dataSnapshot.getKey();
         try{
             Dao<EstabelecimentoAvaliacao, Integer> estabelecimentoAvaliacaoDao = ((AppTccAplication)context.getApplicationContext()).getHelper().getEstabelecimentoAvaliacaoDao();
-            estabelecimentoAvaliacaoDao.callBatchTasks(new Callable<Object>() {
-                @Override
-                public Object call() {
-                    try{
-                        EstabelecimentoAvaliacao estabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().where().eq("id", id).queryForFirst();
+            estabelecimentoAvaliacaoDao.callBatchTasks(() -> {
+                try{
+                    EstabelecimentoAvaliacao estabelecimentoAvaliacao = estabelecimentoAvaliacaoDao.queryBuilder().where().eq("id", id).queryForFirst();
 
-                        if (estabelecimentoAvaliacao!=null){
-                            estabelecimentoAvaliacaoDao.delete(estabelecimentoAvaliacao);
-                        }
-                    }catch (SQLException ex){
-                        Log.e(TAG, "ERRO = ", ex);
+                    if (estabelecimentoAvaliacao!=null){
+                        estabelecimentoAvaliacaoDao.delete(estabelecimentoAvaliacao);
                     }
-                    return null;
+                }catch (SQLException ex){
+                    Log.e(TAG, "ERRO = ", ex);
                 }
+                return null;
             });
         }catch (Exception ex){
             Log.e(TAG, "ERRO = ", ex);

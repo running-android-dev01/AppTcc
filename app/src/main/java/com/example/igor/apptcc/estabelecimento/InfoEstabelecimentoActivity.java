@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
-import com.example.igor.apptcc.controller.ControllerEstabelecimento;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.EstabelecimentoAvaliacao;
 import com.example.igor.apptcc.model.Produto;
@@ -221,7 +220,7 @@ public class InfoEstabelecimentoActivity extends AppCompatActivity {
 
             txtNomeEstabelecimento.setText(estabelecimento.nome);
             txtEnderecoEstabelecimento.setText(estabelecimento.endereco);
-            txtAvaliacaoEstabelecimento.setText(Long.toString(estabelecimento.avaliacao));
+            txtAvaliacaoEstabelecimento.setText(String.format("%d", estabelecimento.avaliacao));
 
 
 

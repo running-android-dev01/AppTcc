@@ -1,6 +1,5 @@
 package com.example.igor.apptcc.estabelecimento;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -31,9 +30,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapaEditarEstabelecimentoActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    private static final String TAG = MapaEditarEstabelecimentoActivity.class.getName();
-
     private static final String PACKAGE_NAME = MapaEditarEstabelecimentoActivity.class.getName();
     public static final String PARAM_LATITUDE = PACKAGE_NAME + ".LATITUDE";
     public static final String PARAM_LONGITUDE = PACKAGE_NAME + ".LONGITUDE";
@@ -202,20 +198,17 @@ public class MapaEditarEstabelecimentoActivity extends AppCompatActivity impleme
         public void onClick(View v) {
             new AlertDialog.Builder(MapaEditarEstabelecimentoActivity.this)
                     .setMessage("Confirma que a posição esta correta?")
-                    .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            LocationsResultReceiver mResultReceiverLocation = new LocationsResultReceiver(new Handler());
+                    .setPositiveButton("Confirmar", (dialog, which) -> {
+                        LocationsResultReceiver mResultReceiverLocation = new LocationsResultReceiver(new Handler());
 
-                            Location location = new Location("");
-                            location.setLatitude(latitude);
-                            location.setLongitude(longitude);
+                        Location location = new Location("");
+                        location.setLatitude(latitude);
+                        location.setLongitude(longitude);
 
-                            Intent intent = new Intent(MapaEditarEstabelecimentoActivity.this, FetchAddressIntentService.class);
-                            intent.putExtra(FetchAddressIntentUtils.RECEIVER, mResultReceiverLocation);
-                            intent.putExtra(FetchAddressIntentUtils.LOCATION_DATA_EXTRA, location);
-                            startService(intent);
-                        }
+                        Intent intent = new Intent(MapaEditarEstabelecimentoActivity.this, FetchAddressIntentService.class);
+                        intent.putExtra(FetchAddressIntentUtils.RECEIVER, mResultReceiverLocation);
+                        intent.putExtra(FetchAddressIntentUtils.LOCATION_DATA_EXTRA, location);
+                        startService(intent);
                     })
                     .setNegativeButton("Cancelar", null)
                     .show();

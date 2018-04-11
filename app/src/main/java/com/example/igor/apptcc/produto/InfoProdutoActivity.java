@@ -12,12 +12,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
-import com.example.igor.apptcc.controller.ControllerProduto;
 import com.example.igor.apptcc.estabelecimento.InfoEstabelecimentoActivity;
 import com.example.igor.apptcc.model.Produto;
 import com.example.igor.apptcc.model.ProdutoAvaliacao;
@@ -35,14 +33,11 @@ public class InfoProdutoActivity extends AppCompatActivity {
 
     private String id_produto;
     private String id_estabelecimento;
-    private Produto produto;
 
-    private ImageView imgPodutoFoto;
     private TextView txtNomeProduto;
     private TextView txtPrecoProduto;
     private TextView txtDescricaoProduto;
     private TextView txtAvaliacaoProduto;
-    private ImageButton imbEditar;
 
     private RecyclerView rcwAvaliacoes;
     private TextView txtEmptyAvaliacoes;
@@ -65,12 +60,11 @@ public class InfoProdutoActivity extends AppCompatActivity {
         id_estabelecimento = getIntent().getExtras().getString(PARAM_ID_ESTABELECIMENTO, "");
 
 
-        imgPodutoFoto = findViewById(R.id.imgPodutoFoto);
         txtAvaliacaoProduto = findViewById(R.id.txtAvaliacaoProduto);
         txtNomeProduto = findViewById(R.id.txtNomeProduto);
         txtPrecoProduto = findViewById(R.id.txtPrecoProduto);
         txtDescricaoProduto = findViewById(R.id.txtDescricaoProduto);
-        imbEditar = findViewById(R.id.imbEditar);
+        ImageButton imbEditar = findViewById(R.id.imbEditar);
 
         rcwAvaliacoes = findViewById(R.id.rcwAvaliacoes);
         txtEmptyAvaliacoes = findViewById(R.id.txtEmptyAvaliacoes);
@@ -140,11 +134,11 @@ public class InfoProdutoActivity extends AppCompatActivity {
             Dao<Produto, Integer> produtoDao = ((AppTccAplication)getApplicationContext()).getHelper().getProdutoDao();
             Dao<ProdutoAvaliacao, Integer> produtoAvaliacaoDao = ((AppTccAplication)getApplicationContext()).getHelper().getProdutoAvaliacaoDao();
 
-            produto = produtoDao.queryBuilder().where().eq("id", id_produto).and().eq("id_estabelecimento", id_estabelecimento).queryForFirst();
+            Produto produto = produtoDao.queryBuilder().where().eq("id", id_produto).and().eq("id_estabelecimento", id_estabelecimento).queryForFirst();
 
             txtNomeProduto.setText(produto.nome.toUpperCase());
             txtDescricaoProduto.setText(produto.descricao);
-            txtAvaliacaoProduto.setText(Long.toString(produto.avaliacao));
+            txtAvaliacaoProduto.setText(String.format("%d", produto.avaliacao));
             txtPrecoProduto.setText(String.format("R$ %s", Float.toString(produto.preco)));
 
             List<ProdutoAvaliacao> lProdutoAvaliacao = produtoAvaliacaoDao.queryBuilder().orderBy("data", false).where().eq("id_produto", id_produto).query();

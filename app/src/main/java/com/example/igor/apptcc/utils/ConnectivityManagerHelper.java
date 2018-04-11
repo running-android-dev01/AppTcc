@@ -21,6 +21,7 @@ public class ConnectivityManagerHelper {
     /*-
      * Only use this method to retrieve error reason
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isConnectedOrConnecting(Context context) {
         NetworkInfo networkInfo = getActivieNetworkInfo(context);
         return networkInfo != null && networkInfo.isConnectedOrConnecting();

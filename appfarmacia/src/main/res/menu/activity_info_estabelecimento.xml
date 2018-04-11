@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/navigation_produto"
-        android:icon="@drawable/ic_local_drink_black_24dp"
+        android:icon="@drawable/ic_produto"
         android:title="@string/title_produtos" />
 
     <item
         android:id="@+id/navigation_avaliacao"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_avaliacao"
         android:title="@string/title_avaliacao" />
 </menu>

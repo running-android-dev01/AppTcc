@@ -35,7 +35,6 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
     private double longitude;
 
     private EditText edtNome;
-    private LinearLayout lnlEnderecoAlterEstabelecimento;
     private TextView txtEnderecoAlterEstabelecimento;
 
     private Estabelecimento estabelecimento;
@@ -57,7 +56,7 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
         longitude = getIntent().getExtras().getDouble(PARAM_LONGITUDE, 0.0);
 
         edtNome = findViewById(R.id.edtNome);
-        lnlEnderecoAlterEstabelecimento = findViewById(R.id.lnlEnderecoAlterEstabelecimento);
+        LinearLayout lnlEnderecoAlterEstabelecimento = findViewById(R.id.lnlEnderecoAlterEstabelecimento);
         txtEnderecoAlterEstabelecimento = findViewById(R.id.txtEnderecoAlterEstabelecimento);
         Button btn_salvar = findViewById(R.id.btn_salvar);
 
@@ -85,7 +84,7 @@ public class EditarEstabelecimentoActivity extends AppCompatActivity {
             edtNome.setError(null);
 
             if (TextUtils.isEmpty(edtNome.getText().toString())){
-                edtNome.setError("Informe o nome");
+                edtNome.setError(getString(R.string.informe_nome_estabelecimento));
                 return;
             }
 

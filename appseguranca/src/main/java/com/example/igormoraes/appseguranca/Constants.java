@@ -2,5 +2,5 @@ package com.example.igormoraes.appseguranca;
 
 
 public class Constants {
-    public static String NOME_BANCO = "appTcc.db";
+    public static String NOME_BANCO = "appseguranca.db";
 }

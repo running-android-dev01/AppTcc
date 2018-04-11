@@ -17,25 +17,19 @@ import android.widget.TextView;
 
 import com.example.igor.apptcc.AppTccAplication;
 import com.example.igor.apptcc.R;
-import com.example.igor.apptcc.estabelecimento.AdapterEstabelecimentoAvaliacao;
-import com.example.igor.apptcc.estabelecimento.InfoEstabelecimentoActivity;
 import com.example.igor.apptcc.model.Estabelecimento;
 import com.example.igor.apptcc.model.PesquisaModel;
 import com.example.igor.apptcc.model.Produto;
-import com.example.igor.apptcc.produto.AdapterProduto;
 import com.example.igor.apptcc.utils.AndroidUtils;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PesquisarActivity extends AppCompatActivity {
     private static final String TAG = PesquisarActivity.class.getName();
-
-    private boolean estabelecimento = true;
 
     private double latitude;
     private double longitude;
@@ -61,7 +55,6 @@ public class PesquisarActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_estabelecimento:
                     txtEmpty.setVisibility(View.GONE);
-                    estabelecimento = true;
                     edtPesquisar.setText("");
                     btn_pesquisar.setOnClickListener(clickEstabelecimento);
                     lPesquisaModel.clear();
@@ -69,7 +62,6 @@ public class PesquisarActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_produto:
                     txtEmpty.setVisibility(View.GONE);
-                    estabelecimento = false;
                     edtPesquisar.setText("");
                     btn_pesquisar.setOnClickListener(clickProduto);
                     lPesquisaModel.clear();
@@ -147,13 +139,10 @@ public class PesquisarActivity extends AppCompatActivity {
                     lPesquisaModel.add(pesquisa);
                 }
 
-                Collections.sort(lPesquisaModel, new Comparator<PesquisaModel>() {
-                    @Override
-                    public int compare(PesquisaModel o1, PesquisaModel o2) {
-                        Double d1 = o1.distancia;
-                        Double d2 = o2.distancia;
-                        return d1.compareTo(d2);
-                    }
+                Collections.sort(lPesquisaModel, (o1, o2) -> {
+                    Double d1 = o1.distancia;
+                    Double d2 = o2.distancia;
+                    return d1.compareTo(d2);
                 });
 
                 txtEmpty.setVisibility(lPesquisaModel.size()==0?View.VISIBLE:View.GONE);
@@ -191,13 +180,10 @@ public class PesquisarActivity extends AppCompatActivity {
                     lPesquisaModel.add(pesquisa);
                 }
 
-                Collections.sort(lPesquisaModel, new Comparator<PesquisaModel>() {
-                    @Override
-                    public int compare(PesquisaModel o1, PesquisaModel o2) {
-                        Double d1 = o1.distancia;
-                        Double d2 = o2.distancia;
-                        return d1.compareTo(d2);
-                    }
+                Collections.sort(lPesquisaModel, (o1, o2) -> {
+                    Double d1 = o1.distancia;
+                    Double d2 = o2.distancia;
+                    return d1.compareTo(d2);
                 });
 
                 txtEmpty.setVisibility(lPesquisaModel.size()==0?View.VISIBLE:View.GONE);

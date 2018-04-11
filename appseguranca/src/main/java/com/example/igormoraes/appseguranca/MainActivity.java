@@ -1,33 +1,33 @@
 package com.example.igormoraes.appseguranca;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.igormoraes.appseguranca.controller.ControllerMapa;
-import com.example.igormoraes.appseguranca.controller.IControllerMapa;
+import com.example.igormoraes.appseguranca.controller.ControllerEstabelecimento;
 import com.example.igormoraes.appseguranca.estabelecimento.EditarEstabelecimentoActivity;
-import com.example.igormoraes.appseguranca.estabelecimento.InfoEstabelecimentoActivity;
-import com.example.igormoraes.appseguranca.model.Estabelecimento;
-import com.example.igormoraes.appseguranca.pesquisar.PesquisarActivity;
+import com.example.igormoraes.appseguranca.model.Ocorrencia;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener,
+        SharedPreferences.OnSharedPreferenceChangeListener{
 
     private static String TAG = MainActivity.class.getName();
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -66,12 +67,16 @@ public class MainActivity extends AppCompatActivity
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    //private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION_NO_MAP = 2;
     private boolean mLocationPermissionGranted;
 
     private FirebaseAuth mAuth;
 
     private HashMap<String, Marker> hasMarker = new HashMap<>();
-    private ControllerMapa controllerMapa;
+    //private ControllerMapa controllerMapa;
+
+
+    private Intent mDownloadsFirebaseServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         View headerLayout = navigationView.getHeaderView(0);
 
 
-        ImageView imgFotoUsuario = headerLayout.findViewById(R.id.imgFotoUsuario);
+        //ImageView imgFotoUsuario = headerLayout.findViewById(R.id.imgFotoUsuario);
         TextView txtNomeUsuario = headerLayout.findViewById(R.id.txtNomeUsuario);
         TextView txtEmailUsuario = headerLayout.findViewById(R.id.txtEmailUsuario);
         TextView txtVersaoUsuario = headerLayout.findViewById(R.id.txtVersaoUsuario);
@@ -112,12 +117,7 @@ public class MainActivity extends AppCompatActivity
         txtEmailUsuario.setText(currentUser.getEmail());
         txtVersaoUsuario.setText(BuildConfig.VERSION_NAME);
 
-        imgFotoUsuario.setOnClickListener(clickUsuario);
-
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(clickFab);
+        //imgFotoUsuario.setOnClickListener(clickUsuario);
 
         //Button buttonProduto = findViewById(R.id.buttonProduto);
         //LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
@@ -140,33 +140,82 @@ public class MainActivity extends AppCompatActivity
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
-        controllerMapa = new ControllerMapa();
+        //controllerMapa = new ControllerMapa();
+
+        DownloadsFirebaseService mDownloadsFirebaseService = new DownloadsFirebaseService();
+        mDownloadsFirebaseServiceIntent = new Intent(this, mDownloadsFirebaseService.getClass());
+        if (!isMyServiceRunning(mDownloadsFirebaseService.getClass())) {
+            startService(mDownloadsFirebaseServiceIntent);
+        }
     }
 
+    @Override
+    protected void onDestroy() {
+        stopService(mDownloadsFirebaseServiceIntent);
+        super.onDestroy();
+    }
 
-    private View.OnClickListener clickFab = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            double latitude = mLastKnownLocation.getLatitude();
-            double longitude = mLastKnownLocation.getLongitude();
-
-            Intent i = new Intent(MainActivity.this, PesquisarActivity.class);
-
-            i.putExtra(PesquisarActivity.PARAM_LATITUDE, latitude);
-            i.putExtra(PesquisarActivity.PARAM_LONGITUDE, longitude);
-            startActivity(i);
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
         }
-    };
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        double latitude = mLastKnownLocation.getLatitude();
+        double longitude = mLastKnownLocation.getLongitude();
+
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.menu_estabelecimento_novo:
+
+                Intent iEstabNovo = new Intent(MainActivity.this, EditarEstabelecimentoActivity.class);
+                iEstabNovo.putExtra(EditarEstabelecimentoActivity.PARAM_ID, "");
+                iEstabNovo.putExtra(EditarEstabelecimentoActivity.PARAM_LATITUDE, latitude);
+                iEstabNovo.putExtra(EditarEstabelecimentoActivity.PARAM_LONGITUDE, longitude);
+
+                startActivity(iEstabNovo);
+                break;
+            case R.id.menu_sair:
+                mAuth.signOut();
+                Intent intent = new Intent(getApplicationContext(), com.example.igormoraes.appseguranca.usuario.LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
         if (mGoogleApiClient!=null) mGoogleApiClient.connect();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
     }
 
     @Override
     protected void onStop() {
         if (mGoogleApiClient!=null) mGoogleApiClient.disconnect();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
     }
 
@@ -197,21 +246,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_estab) {
-            double latitude = mLastKnownLocation.getLatitude();
-            double longitude = mLastKnownLocation.getLongitude();
-
-            Intent i = new Intent(MainActivity.this, EditarEstabelecimentoActivity.class);
-            i.putExtra(EditarEstabelecimentoActivity.PARAM_ID, "");
-            i.putExtra(EditarEstabelecimentoActivity.PARAM_LATITUDE, latitude);
-            i.putExtra(EditarEstabelecimentoActivity.PARAM_LONGITUDE, longitude);
-
-            startActivity(i);
-        } else if (id == R.id.nav_avaliacao) {
-            Toast.makeText(this, "Click Avaliacao", Toast.LENGTH_LONG).show();
-        } else if (id == R.id.nav_ajustes) {
-            Toast.makeText(this, "Click Ajustes", Toast.LENGTH_LONG).show();
-        } else if (id == R.id.nav_sair) {
+        if (id == R.id.nav_sair) {
             mAuth.signOut();
             Intent intent = new Intent(getApplicationContext(), com.example.igormoraes.appseguranca.usuario.LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -225,26 +260,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private View.OnClickListener clickUsuario = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(MainActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
-        }
-    };
+    //private View.OnClickListener clickUsuario = v -> Toast.makeText(MainActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
 
-    private View.OnClickListener clickProduto = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(MainActivity.this, "Achar produto", Toast.LENGTH_LONG).show();
-        }
-    };
-
-    private View.OnClickListener clickEstabelecimento = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(MainActivity.this, "Achar estab", Toast.LENGTH_LONG).show();
-        }
-    };
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -289,16 +306,18 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                String key = (String) marker.getTag();
+        mMap.setOnInfoWindowClickListener(marker -> {
+            String key = (String) marker.getTag();
 
-                Intent i = new Intent(MainActivity.this, InfoEstabelecimentoActivity.class);
-                i.putExtra(InfoEstabelecimentoActivity.PARAM_ID, key);
+            double latitude = mLastKnownLocation.getLatitude();
+            double longitude = mLastKnownLocation.getLongitude();
 
-                startActivity(i);
-            }
+            Intent iEstabNovo = new Intent(MainActivity.this, EditarEstabelecimentoActivity.class);
+            iEstabNovo.putExtra(EditarEstabelecimentoActivity.PARAM_ID, key);
+            iEstabNovo.putExtra(EditarEstabelecimentoActivity.PARAM_LATITUDE, latitude);
+            iEstabNovo.putExtra(EditarEstabelecimentoActivity.PARAM_LONGITUDE, longitude);
+
+            startActivity(iEstabNovo);
         });
 
         updateLocationUI();
@@ -359,7 +378,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         carregarEstab();
-        controllerMapa.atualizarMapa(iControllerMapa, MainActivity.this);
+        //controllerMapa.atualizarMapa(iControllerMapa, MainActivity.this);
     }
 
     @Override
@@ -376,31 +395,35 @@ public class MainActivity extends AppCompatActivity
                     if (grantResults.length > 0
                             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         mLocationPermissionGranted = true;
+                        updateLocationUI();
+                        getDeviceLocation();
                     }
                 }
             }
-            updateLocationUI();
+            //updateLocationUI();
         }
     }
 
     private void carregarEstab(){
         try{
-            Dao<Estabelecimento, Integer> estabelecimentoDao = ((AppTccAplication)this.getApplicationContext()).getHelper().getEstabelecimentoDao();
-            List<Estabelecimento> lEstabelecimento = estabelecimentoDao.queryForAll();
-            for (Estabelecimento estabelecimento: lEstabelecimento) {
-                Marker m = hasMarker.get(estabelecimento.id);
-                if (m!=null){
-                    m.remove();
-                    hasMarker.remove(estabelecimento.id);
+            if (mMap!=null){
+                Dao<Ocorrencia, Integer> estabelecimentoDao = ((AppTccAplication)this.getApplicationContext()).getHelper().getEstabelecimentoDao();
+                List<Ocorrencia> lEstabelecimento = estabelecimentoDao.queryForAll();
+                for (Ocorrencia estabelecimento: lEstabelecimento) {
+                    Marker m = hasMarker.get(estabelecimento.id);
+                    if (m!=null){
+                        m.remove();
+                        hasMarker.remove(estabelecimento.id);
+                    }
+
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
+                            .title(estabelecimento.ocorrencia)
+                            .snippet(estabelecimento.endereco));
+
+                    marker.setTag(estabelecimento.id);
+                    hasMarker.put(estabelecimento.id, marker);
                 }
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
-                        .title(estabelecimento.nome)
-                        .snippet(estabelecimento.endereco));
-
-                marker.setTag(estabelecimento.id);
-                hasMarker.put(estabelecimento.id, marker);
             }
         }catch (SQLException ex){
             Log.e(TAG, "ERRO = ", ex);
@@ -408,32 +431,18 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private IControllerMapa iControllerMapa = new IControllerMapa() {
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(ControllerEstabelecimento.KEY_NEW_ESTAB)) {
+            carregarEstab();
+        }else if (key.equals(ControllerEstabelecimento.KEY_DELL_ESTAB)) {
+            String id = ControllerEstabelecimento.getDellEstab(getApplicationContext());
 
-        @Override
-        public void atualizarMapa(Estabelecimento estabelecimento) {
-            Marker m = hasMarker.get(estabelecimento.id);
-            if (m!=null){
-                m.remove();
-                hasMarker.remove(estabelecimento.id);
-            }
-
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(estabelecimento.latitude, estabelecimento.longitude))
-                    .title(estabelecimento.nome)
-                    .snippet(estabelecimento.endereco));
-
-            marker.setTag(estabelecimento.id);
-            hasMarker.put(estabelecimento.id, marker);
-        }
-
-        @Override
-        public void excluirMapa(String id) {
             Marker marker = hasMarker.get(id);
             if (marker!=null){
                 marker.remove();
                 hasMarker.remove(id);
             }
         }
-    };
+    }
 }

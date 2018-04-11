@@ -16,10 +16,12 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:src="@drawable/ic_avaliacao"
+            android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="14dp"
             android:layout_gravity="center_horizontal" />
 
 
@@ -27,7 +29,7 @@
             android:id="@+id/txtNomeProduto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PRODUTO"
+            android:text=""
             android:gravity="center"
             style="@style/TextAppearance.AppCompat.Headline"/>
 
@@ -51,7 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
-                android:hint="Texto avaliação"/>
+                android:hint="@string/texto_avaliacao"
+                tools:ignore="Autofill"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -62,7 +65,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Salvar"/>
+            android:text="@string/salvar"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -16,10 +16,12 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@mipmap/ic_estab_foreground"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:src="@drawable/ic_estabelecimento"
+            android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="14dp"
             android:layout_gravity="center_horizontal" />
 
 
@@ -33,7 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Nome Estabelecimento"/>
+                android:hint="@string/nome_estabelecimento"
+                tools:ignore="Autofill"/>
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
@@ -47,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Endereço"
+                android:text="@string/endereco"
                 style="@style/TextAppearance.AppCompat.Caption"
                 />
 
@@ -73,7 +76,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Atualizar"/>
+            android:text="@string/atualizar"/>
 
 
     </LinearLayout>

@@ -7,11 +7,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -25,9 +23,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.igor.apptcc.controller.ControllerEstabelecimento;
 import com.example.igor.apptcc.estabelecimento.EditarEstabelecimentoActivity;
@@ -82,8 +78,7 @@ public class MainActivity extends AppCompatActivity
     //private ControllerMapa controllerMapa;
 
 
-    Intent mDownloadsFirebaseServiceIntent;
-    private DownloadsFirebaseService mDownloadsFirebaseService;
+    private Intent mDownloadsFirebaseServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +110,7 @@ public class MainActivity extends AppCompatActivity
         View headerLayout = navigationView.getHeaderView(0);
 
 
-        ImageView imgFotoUsuario = headerLayout.findViewById(R.id.imgFotoUsuario);
+        //ImageView imgFotoUsuario = headerLayout.findViewById(R.id.imgFotoUsuario);
         TextView txtNomeUsuario = headerLayout.findViewById(R.id.txtNomeUsuario);
         TextView txtEmailUsuario = headerLayout.findViewById(R.id.txtEmailUsuario);
         TextView txtVersaoUsuario = headerLayout.findViewById(R.id.txtVersaoUsuario);
@@ -124,7 +119,7 @@ public class MainActivity extends AppCompatActivity
         txtEmailUsuario.setText(currentUser.getEmail());
         txtVersaoUsuario.setText(BuildConfig.VERSION_NAME);
 
-        imgFotoUsuario.setOnClickListener(clickUsuario);
+        //imgFotoUsuario.setOnClickListener(clickUsuario);
 
         //Button buttonProduto = findViewById(R.id.buttonProduto);
         //LinearLayout buttonEstab = findViewById(R.id.buttonEstab);
@@ -149,7 +144,7 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient.connect();
         //controllerMapa = new ControllerMapa();
 
-        mDownloadsFirebaseService = new DownloadsFirebaseService();
+        DownloadsFirebaseService mDownloadsFirebaseService = new DownloadsFirebaseService();
         mDownloadsFirebaseServiceIntent = new Intent(this, mDownloadsFirebaseService.getClass());
         if (!isMyServiceRunning(mDownloadsFirebaseService.getClass())) {
             startService(mDownloadsFirebaseServiceIntent);
@@ -274,12 +269,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private View.OnClickListener clickUsuario = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(MainActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
-        }
-    };
+    //private View.OnClickListener clickUsuario = v -> Toast.makeText(MainActivity.this, "Click usuario", Toast.LENGTH_LONG).show();
 
 
     @Override
@@ -325,16 +315,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                String key = (String) marker.getTag();
+        mMap.setOnInfoWindowClickListener(marker -> {
+            String key = (String) marker.getTag();
 
-                Intent i = new Intent(MainActivity.this, InfoEstabelecimentoActivity.class);
-                i.putExtra(InfoEstabelecimentoActivity.PARAM_ID, key);
+            Intent i = new Intent(MainActivity.this, InfoEstabelecimentoActivity.class);
+            i.putExtra(InfoEstabelecimentoActivity.PARAM_ID, key);
 
-                startActivity(i);
-            }
+            startActivity(i);
         });
 
         updateLocationUI();
