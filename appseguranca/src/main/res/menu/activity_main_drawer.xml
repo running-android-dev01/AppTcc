@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="Funções">
+        <menu>
+            <item
+                android:id="@+id/nav_estab"
+                android:title="Novo estabelecimento" />
+            <item
+                android:id="@+id/nav_avaliacao"
+                android:title="Suas avaliações" />
+            <item
+                android:id="@+id/nav_ajustes"
+                android:title="Ajustes filtro" />
+            <item
+                android:id="@+id/nav_sair"
+                android:title="Sair" />
+        </menu>
+    </item>
+</menu>
